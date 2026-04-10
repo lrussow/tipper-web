@@ -1,0 +1,16 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <a routerLink="/" id="nav-logo">
+      <span class="brand-icon">💳</span>
+      <span class="brand-name">The Tipper</span>
+    </a>
+  </div>
+  <ul class="nav-links">
+    <li>
+      <a id="nav-home" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    </li>
+    <li>
+      <a id="nav-contact" routerLink="/contact" routerLinkActive="active">Contact</a>
+    </li>
+  </ul>
+</nav>

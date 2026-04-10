@@ -1,0 +1,180 @@
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <h1>Your Tip Jar Just Went Digital</h1>
+    <p class="hero-sub">
+      Nobody carries cash anymore — but people still want to tip. <strong>The Tipper</strong> turns your smartphone
+      into a contactless payment terminal, so you never miss a gratuity again. A customer taps their card or phone,
+      and the tip goes straight to your bank account.
+    </p>
+    <div class="hero-cta">
+      <a id="hero-get-started" routerLink="/contact" class="btn btn-primary">Get Started</a>
+      <a id="hero-learn-more" href="#how-it-works" class="btn btn-outline">Learn More</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="phone-mockup">
+      <span class="phone-icon">📱</span>
+      <span class="tap-icon">💳</span>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Banner -->
+<section class="stats-banner">
+  <div class="stat">
+    <span class="stat-value">73%</span>
+    <span class="stat-label">of consumers carry less cash than 5 years ago</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat">
+    <span class="stat-value">40%</span>
+    <span class="stat-label">of people have wanted to tip but couldn't — no cash</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat">
+    <span class="stat-value">$0</span>
+    <span class="stat-label">hardware required — just your phone</span>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <p>Hold out your phone</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <p>Customer chooses the tip amount</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <p>Customer taps their card or phone. All done.</p>
+      </div>
+    </div>
+    <p class="steps-sub">No card reader. No hardware. Just the phone.</p>
+  </div>
+</section>
+
+<!-- Built For -->
+<section class="built-for">
+  <div class="container">
+    <h2>Built for People Who Earn Tips</h2>
+    <div class="features-grid">
+      @for (f of features; track f.title) {
+        <div class="feature-card">
+          <span class="feature-icon">{{ f.icon }}</span>
+          <h3>{{ f.title }}</h3>
+          <p>{{ f.description }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Why The Tipper -->
+<section class="why-tipper">
+  <div class="container">
+    <h2>Why The Tipper?</h2>
+    <div class="table-wrapper">
+      <table id="features-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Benefit</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of featureTable; track row.feature) {
+            <tr>
+              <td><strong>{{ row.feature }}</strong></td>
+              <td>{{ row.benefit }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing">
+  <div class="container">
+    <h2>Simple, Transparent Pricing</h2>
+    <div class="pricing-card">
+      <div class="price-highlight">
+        <span class="price">$9.99</span>
+        <span class="price-period">/month</span>
+      </div>
+      <table id="pricing-table">
+        <tbody>
+          @for (row of pricing; track row.item) {
+            <tr>
+              <td><strong>{{ row.item }}</strong></td>
+              <td>{{ row.details }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <p class="pricing-note">No markup on transaction fees. You pay exactly what Stripe charges, nothing more.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Security -->
+<section class="security">
+  <div class="container">
+    <h2>Security You Can Trust</h2>
+    <div class="security-grid">
+      <div class="security-item">
+        <span class="security-icon">🔒</span>
+        <p>PCI-DSS compliant payment processing</p>
+      </div>
+      <div class="security-item">
+        <span class="security-icon">🔐</span>
+        <p>End-to-end encryption on every transaction</p>
+      </div>
+      <div class="security-item">
+        <span class="security-icon">🚫</span>
+        <p>No card data stored on the device — ever</p>
+      </div>
+      <div class="security-item">
+        <span class="security-icon">✅</span>
+        <p>Powered by Stripe — trusted by millions of businesses worldwide</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Get Started -->
+<section class="get-started">
+  <div class="container">
+    <h2>Get Started in Under 2 Minutes</h2>
+    <div class="steps-timeline">
+      @for (s of steps; track s.num) {
+        <div class="timeline-step">
+          <div class="timeline-num">{{ s.num }}</div>
+          <div class="timeline-content">
+            <strong>{{ s.title }}</strong>
+            <p>{{ s.desc }}</p>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="cta-block">
+      <h3>Ready to Never Miss a Tip Again?</h3>
+      <a id="cta-contact" routerLink="/contact" class="btn btn-primary btn-lg">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p><em>The Tipper™ by Tip &amp; Tap — Because you've earned it, and they want to pay it.</em></p>
+</footer>

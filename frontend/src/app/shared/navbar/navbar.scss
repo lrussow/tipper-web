@@ -1,0 +1,48 @@
+.navbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 2rem;
+	height: 64px;
+	background: #1a1a2e;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+	.navbar-brand a {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		text-decoration: none;
+		color: #fff;
+
+		.brand-icon {
+			font-size: 1.5rem;
+		}
+
+		.brand-name {
+			font-size: 1.25rem;
+			font-weight: 700;
+			letter-spacing: 0.5px;
+		}
+	}
+
+	.nav-links {
+		display: flex;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		gap: 2rem;
+
+		a {
+			color: #ccc;
+			text-decoration: none;
+			font-size: 0.95rem;
+			font-weight: 500;
+			transition: color 0.2s;
+
+			&:hover,
+			&.active {
+				color: #6c63ff;
+			}
+		}
+	}
+}

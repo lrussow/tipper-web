@@ -1,0 +1,159 @@
+# Copilot Instructions — tipper-web
+
+## Project Overview
+
+**tipper-web** is the marketing website for **The Tipper™ by Tip & Tap** — a contactless tipping app powered by Stripe. It is built with:
+
+- **Frontend**: Angular (standalone components, SCSS, no Angular Material — use DevExtreme)
+- **Backend**: Python FastAPI with Pydantic models and CORS enabled for `localhost:4200`
+
+---
+
+## Architecture
+
+```
+tipper-web/
+├── backend/               ← FastAPI
+│   ├── main.py
+│   └── requirements.txt
+└── frontend/              ← Angular
+    └── src/app/
+        ├── models/                        ← interfaces & data types
+        │   ├── feature.model.ts           ← Feature interface
+        │   ├── pricing-row.model.ts       ← PricingRow interface
+        │   ├── contact-form.model.ts      ← ContactForm interface
+        │   └── contact-response.model.ts  ← ContactResponse interface
+        ├── viewmodels/                    ← ViewModel classes (one per page)
+        │   ├── home.view-model.ts
+        │   └── contact.view-model.ts
+        ├── pages/
+        │   ├── home/
+        │   │   ├── home.component.ts      ← thin wrapper only
+        │   │   ├── home.component.html
+        │   │   └── home.component.scss
+        │   └── contact/
+        │       ├── contact.component.ts   ← thin wrapper only
+        │       ├── contact.component.html
+        │       └── contact.component.scss
+        └── shared/
+            └── navbar/
+```
+
+---
+
+## Frontend: MVVM Pattern
+
+**Every page component MUST follow MVVM.** Each page has a corresponding ViewModel file.
+
+### ViewModel Rules
+
+- File naming: `{page-name}.view-model.ts`
+- Class naming: `{PageName}ViewModel`
+- ViewModels are **plain TypeScript classes** — no `@Injectable`, no Angular decorators
+- All state, data properties, computed properties, and action methods live on the ViewModel
+- ViewModels receive services via constructor injection (passed in by the component)
+- ViewModels expose an `init(): Promise<void>` method for async initialization
+- Never put business logic or API calls directly in the component
+
+### Component Rules
+
+- Components are **thin wrappers** — they only:
+  1. Declare `vm: PageViewModel`
+  2. Instantiate the ViewModel in the constructor, passing required services
+  3. Call `await this.vm.init()` in `ngOnInit()`
+  4. Delegate all user action methods to `this.vm.someMethod()`
+- The template binds exclusively to `vm.*` properties and methods
+
+### Example Pattern
+
+**`home.view-model.ts`:**
+```typescript
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+
+export class HomeViewModel {
+	features = [...];   // all state here
+	isLoading = false;
+
+	constructor(private http: HttpClient) {}
+
+	async init(): Promise<void> {
+		// load any async data
+	}
+}
+```
+
+**`home.component.ts`:**
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { HomeViewModel } from './home.view-model';
+
+@Component({ selector: 'app-home', standalone: true, ... })
+export class HomeComponent implements OnInit {
+	vm: HomeViewModel;
+
+	constructor(private http: HttpClient) {
+		this.vm = new HomeViewModel(http);
+	}
+
+	async ngOnInit(): Promise<void> {
+		await this.vm.init();
+	}
+}
+```
+
+**`home.component.html`:**
+```html
+@for (f of vm.features; track f.title) { ... }
+<p>{{ vm.someProperty }}</p>
+<button (click)="vm.doSomething()">Click</button>
+```
+
+---
+
+## Frontend: General Standards
+
+- **Indentation**: Tabs
+- **Quotes**: Single quotes
+- **Semicolons**: Required
+- **UI Controls**: DevExtreme only — no Angular Material
+- **HTTP calls**: Use `firstValueFrom()` / `lastValueFrom()` — never raw `.subscribe()` or `.then()` chains
+- **IDs on all interactive elements**: Required for Selenium testing (kebab-case, e.g. `contact-submit`, `nav-home`)
+- **No `any` type** — use explicit types or `unknown`
+- **`const` over `let`** when never reassigned
+- **Colors / palette**: Primary `#6c63ff`, dark background `#1a1a2e`
+
+---
+
+## Backend: FastAPI Standards
+
+- Pydantic `BaseModel` for all request/response models
+- CORS enabled for `http://localhost:4200` (dev)
+- All routes prefixed with `/api`
+- Use `async def` for all route handlers
+- Never commit `appsettings.json` or `.env` with real credentials
+
+---
+
+## Running Locally
+
+```bash
+# Backend
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+
+# Frontend
+cd frontend
+npm install
+npm start    # proxies /api → localhost:8000
+```
+
+---
+
+## Testing
+
+- Every component and service must have a `.spec.ts` file
+- Selenium UI tests: use `By.Id()` only — never XPath or CSS selectors
+- Every testable HTML element needs a unique `id` attribute

@@ -67,7 +67,7 @@
   <div class="container">
     <h2>Built for People Who Earn Tips</h2>
     <div class="features-grid">
-      @for (f of features; track f.title) {
+      @for (f of vm.features; track f.title) {
         <div class="feature-card">
           <span class="feature-icon">{{ f.icon }}</span>
           <h3>{{ f.title }}</h3>
@@ -91,7 +91,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (row of featureTable; track row.feature) {
+          @for (row of vm.featureTable; track row.feature) {
             <tr>
               <td><strong>{{ row.feature }}</strong></td>
               <td>{{ row.benefit }}</td>
@@ -114,7 +114,7 @@
       </div>
       <table id="pricing-table">
         <tbody>
-          @for (row of pricing; track row.item) {
+          @for (row of vm.pricing; track row.item) {
             <tr>
               <td><strong>{{ row.item }}</strong></td>
               <td>{{ row.details }}</td>
@@ -157,7 +157,7 @@
   <div class="container">
     <h2>Get Started in Under 2 Minutes</h2>
     <div class="steps-timeline">
-      @for (s of steps; track s.num) {
+      @for (s of vm.steps; track s.num) {
         <div class="timeline-step">
           <div class="timeline-num">{{ s.num }}</div>
           <div class="timeline-content">

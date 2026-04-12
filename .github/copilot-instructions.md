@@ -126,6 +126,19 @@ export class HomeComponent implements OnInit {
 
 ---
 
+## Mobile / Responsive Design
+
+- **Desktop-first**: existing desktop styles are the baseline; responsiveness is added via `@media` blocks
+- **Two breakpoints**:
+  - `≤ 1024px` (tablet): mild adjustments — reduce padding, hide decorative visuals, slightly smaller headings
+  - `≤ 640px` (phone): full mobile treatment — stacked layouts, hidden dividers/arrows, further font/padding reduction
+- **Navbar hamburger** activates at `≤ 768px` (portrait tablets and all phones)
+- All `@media` blocks live **inline in each SCSS file** — no separate mobile stylesheets
+- The navbar must include a hamburger toggle button with `id="nav-menu-toggle"`
+- No horizontal scrolling on any page at 375px viewport width
+
+---
+
 ## Backend: FastAPI Standards
 
 - Pydantic `BaseModel` for all request/response models

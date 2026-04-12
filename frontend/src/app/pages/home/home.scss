@@ -505,3 +505,116 @@ $border: #e0e0e0;
 	padding: 1.5rem;
 	font-size: 0.875rem;
 }
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+	.hero {
+		padding: 4rem 2rem 3rem;
+
+		.hero-content h1 {
+			font-size: 2.25rem;
+		}
+
+		.hero-visual {
+			display: none;
+		}
+	}
+
+	.how-it-works,
+	.built-for,
+	.why-tipper,
+	.pricing,
+	.security,
+	.get-started {
+		padding: 4rem 2rem;
+	}
+}
+
+/* ── Phone (≤ 640px) ── */
+@media (max-width: 640px) {
+	.hero {
+		flex-direction: column;
+		padding: 3rem 1.25rem 2.5rem;
+		min-height: unset;
+		text-align: center;
+
+		.hero-content {
+			max-width: 100%;
+
+			h1 {
+				font-size: 1.75rem;
+			}
+
+			.hero-sub {
+				font-size: 1rem;
+			}
+
+			.hero-cta {
+				justify-content: center;
+			}
+		}
+	}
+
+	.stats-banner {
+		padding: 2rem 1.25rem;
+		gap: 1.5rem;
+
+		.stat-divider {
+			display: none;
+		}
+	}
+
+	.how-it-works {
+		padding: 2.5rem 1rem;
+
+		.steps {
+			flex-direction: column;
+			align-items: center;
+
+			.step {
+				width: 100%;
+				max-width: 320px;
+			}
+
+			.step-arrow {
+				display: none;
+			}
+		}
+	}
+
+	.built-for {
+		padding: 2.5rem 1rem;
+	}
+
+	.why-tipper {
+		padding: 2.5rem 1rem;
+	}
+
+	.pricing {
+		padding: 2.5rem 1rem;
+
+		.pricing-card {
+			padding: 1.75rem 1.25rem;
+
+			.price-highlight .price {
+				font-size: 2.5rem;
+			}
+		}
+	}
+
+	.security {
+		padding: 2.5rem 1rem;
+	}
+
+	.get-started {
+		padding: 2.5rem 1rem;
+
+		.cta-block {
+			padding: 2rem 1.25rem;
+
+			h3 {
+				font-size: 1.25rem;
+			}
+		}
+	}
+}

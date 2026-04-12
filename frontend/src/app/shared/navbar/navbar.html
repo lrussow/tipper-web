@@ -1,10 +1,15 @@
-<nav class="navbar">
+<nav class="navbar" [class.open]="menuOpen">
   <div class="navbar-brand">
     <a routerLink="/" id="nav-logo">
       <span class="brand-icon">💳</span>
       <span class="brand-name">The Tipper</span>
     </a>
   </div>
+  <button id="nav-menu-toggle" class="hamburger" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen" aria-label="Toggle navigation">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
   <ul class="nav-links">
     <li>
       <a id="nav-home" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>

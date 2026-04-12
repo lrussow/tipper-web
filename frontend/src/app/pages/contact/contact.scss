@@ -27,6 +27,22 @@ $border: #e0e0e0;
 		font-size: 1.1rem;
 		opacity: 0.85;
 	}
+
+	@media (max-width: 1024px) {
+		padding: 2.5rem 2rem;
+	}
+
+	@media (max-width: 640px) {
+		padding: 2rem 1.25rem;
+
+		h1 {
+			font-size: 1.75rem;
+		}
+
+		p {
+			font-size: 1rem;
+		}
+	}
 }
 
 .contact-body {
@@ -39,6 +55,10 @@ $border: #e0e0e0;
 
 	@media (max-width: 768px) {
 		grid-template-columns: 1fr;
+	}
+
+	@media (max-width: 640px) {
+		padding: 2rem 1rem;
 	}
 }
 

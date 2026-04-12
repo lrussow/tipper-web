@@ -23,7 +23,7 @@ export class ContactViewModel {
 		this.error = '';
 		try {
 			await firstValueFrom(
-				this.http.post<ContactResponse>(`${API_BASE}/contact`, this.form)
+				this.http.post<ContactResponse>('/api/contact', this.form)
 			);
 			this.submitted = true;
 		} catch {

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
 	selector: 'app-navbar',
@@ -8,4 +8,16 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 	templateUrl: './navbar.html',
 	styleUrl: './navbar.scss',
 })
-export class Navbar {}
+export class Navbar {
+	menuOpen = false;
+
+	constructor(router: Router) {
+		router.events.subscribe(() => {
+			this.menuOpen = false;
+		});
+	}
+
+	toggleMenu(): void {
+		this.menuOpen = !this.menuOpen;
+	}
+}

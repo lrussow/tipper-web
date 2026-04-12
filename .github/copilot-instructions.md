@@ -187,17 +187,27 @@ apt-get update -qq && apt-get install -y -qq libcairo2 libpango-1.0-0 libpangoca
 pip install cairosvg Pillow --quiet &&
 python3 - <<'EOF'
 import cairosvg, io
-from PIL import Image, ImageOps
+from PIL import Image
 
 inner = int(256 * 0.9)
-png_bytes = cairosvg.svg2png(url='/work/logo.svg', output_width=inner, output_height=inner)
+with open('/work/logo.svg', 'r') as f:
+    svg = f.read()
+
+# Swap light/dark blues so circles are dark and T is light
+svg = svg.replace('#5ac4f6', '__CIRCLE_MAIN__')
+svg = svg.replace('#0042a9', '__T_MAIN__')
+svg = svg.replace('#93e3fd', '__CIRCLE_OVERLAY__')
+svg = svg.replace('#1a0a52', '__T_SHADOW__')
+svg = svg.replace('__CIRCLE_MAIN__',    '#0042a9')
+svg = svg.replace('__T_MAIN__',         '#5ac4f6')
+svg = svg.replace('__CIRCLE_OVERLAY__', '#1a0a52')
+svg = svg.replace('__T_SHADOW__',       '#93e3fd')
+
+png_bytes = cairosvg.svg2png(bytestring=svg.encode(), output_width=inner, output_height=inner)
 inner_img = Image.open(io.BytesIO(png_bytes)).convert('RGBA')
-r, g, b, a = inner_img.split()
-rgb_inv = ImageOps.invert(Image.merge('RGB', (r, g, b)))
-inverted = Image.merge('RGBA', (*rgb_inv.split(), a))
 canvas = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
 offset = (256 - inner) // 2
-canvas.paste(inverted, (offset, offset), inverted)
+canvas.paste(inner_img, (offset, offset), inner_img)
 canvas.save('/work/favicon.ico', format='ICO', sizes=[(16,16),(32,32),(48,48),(256,256)])
 print('Done')
 EOF

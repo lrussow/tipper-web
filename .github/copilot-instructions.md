@@ -122,7 +122,7 @@ export class HomeComponent implements OnInit {
 - **IDs on all interactive elements**: Required for Selenium testing (kebab-case, e.g. `contact-submit`, `nav-home`)
 - **No `any` type** — use explicit types or `unknown`
 - **`const` over `let`** when never reassigned
-- **Colors / palette**: Primary `#6c63ff`, dark background `#1a1a2e`
+- **Colors / palette**: Primary `#4e5e8b`, dark background `#1a1a2e`
 
 ---
 
@@ -170,3 +170,33 @@ npm start    # proxies /api → localhost:8000
 - Every component and service must have a `.spec.ts` file
 - Selenium UI tests: use `By.Id()` only — never XPath or CSS selectors
 - Every testable HTML element needs a unique `id` attribute
+
+---
+
+## Tooling: Image / Asset Conversion
+
+When runtimes (Python, Node.js) are not available locally, use **Docker** for asset processing tasks.
+
+### SVG → favicon.ico
+
+To regenerate `frontend/public/favicon.ico` from `frontend/public/logo.svg` (logo rendered at 80% scale with transparent padding, multi-size ICO):
+
+```bash
+docker run --rm -v "${PWD}/frontend/public:/work" python:3.11-slim bash -c "
+apt-get update -qq && apt-get install -y -qq libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libffi-dev shared-mime-info &&
+pip install cairosvg Pillow --quiet &&
+python3 - <<'EOF'
+import cairosvg, io
+from PIL import Image
+
+inner = int(256 * 0.8)
+png_bytes = cairosvg.svg2png(url='/work/logo.svg', output_width=inner, output_height=inner)
+inner_img = Image.open(io.BytesIO(png_bytes)).convert('RGBA')
+canvas = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+offset = (256 - inner) // 2
+canvas.paste(inner_img, (offset, offset), inner_img)
+canvas.save('/work/favicon.ico', format='ICO', sizes=[(16,16),(32,32),(48,48),(256,256)])
+print('Done')
+EOF
+"
+```

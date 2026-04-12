@@ -198,10 +198,10 @@ svg = svg.replace('#5ac4f6', '__CIRCLE_MAIN__')
 svg = svg.replace('#0042a9', '__T_MAIN__')
 svg = svg.replace('#93e3fd', '__CIRCLE_OVERLAY__')
 svg = svg.replace('#1a0a52', '__T_SHADOW__')
-svg = svg.replace('__CIRCLE_MAIN__',    '#0042a9')
-svg = svg.replace('__T_MAIN__',         '#5ac4f6')
-svg = svg.replace('__CIRCLE_OVERLAY__', '#1a0a52')
-svg = svg.replace('__T_SHADOW__',       '#93e3fd')
+svg = svg.replace('__CIRCLE_MAIN__',    '#0042a9')   # left circle -> dark blue
+svg = svg.replace('__T_MAIN__',         '#5ac4f6')   # T -> light blue
+svg = svg.replace('__CIRCLE_OVERLAY__', '#5ac4f6')   # right circle -> light blue
+svg = svg.replace('__T_SHADOW__',       '#93e3fd')   # T shadow -> lightest blue
 
 png_bytes = cairosvg.svg2png(bytestring=svg.encode(), output_width=inner, output_height=inner)
 inner_img = Image.open(io.BytesIO(png_bytes)).convert('RGBA')

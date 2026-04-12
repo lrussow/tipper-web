@@ -189,10 +189,10 @@ python3 - <<'EOF'
 import cairosvg, io
 from PIL import Image
 
-inner = int(256 * 0.8)
+inner = int(256 * 0.9)
 png_bytes = cairosvg.svg2png(url='/work/logo.svg', output_width=inner, output_height=inner)
 inner_img = Image.open(io.BytesIO(png_bytes)).convert('RGBA')
-canvas = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+canvas = Image.new('RGBA', (256, 256), (26, 26, 46, 255))  # #1a1a2e dark background
 offset = (256 - inner) // 2
 canvas.paste(inner_img, (offset, offset), inner_img)
 canvas.save('/work/favicon.ico', format='ICO', sizes=[(16,16),(32,32),(48,48),(256,256)])

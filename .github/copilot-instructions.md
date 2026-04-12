@@ -203,6 +203,9 @@ svg = svg.replace('__T_MAIN__',         '#5ac4f6')   # T -> light blue
 svg = svg.replace('__CIRCLE_OVERLAY__', '#5ac4f6')   # right circle -> light blue
 svg = svg.replace('__T_SHADOW__',       '#93e3fd')   # T shadow -> lightest blue
 
+# Make right circle fully opaque so outer region is solid light blue not washed-out
+svg = svg.replace('fill:#5ac4f6;fill-opacity:0.5', 'fill:#5ac4f6;fill-opacity:1')
+
 png_bytes = cairosvg.svg2png(bytestring=svg.encode(), output_width=inner, output_height=inner)
 inner_img = Image.open(io.BytesIO(png_bytes)).convert('RGBA')
 canvas = Image.new('RGBA', (256, 256), (0, 0, 0, 0))

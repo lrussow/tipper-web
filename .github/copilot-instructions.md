@@ -187,14 +187,17 @@ apt-get update -qq && apt-get install -y -qq libcairo2 libpango-1.0-0 libpangoca
 pip install cairosvg Pillow --quiet &&
 python3 - <<'EOF'
 import cairosvg, io
-from PIL import Image
+from PIL import Image, ImageOps
 
 inner = int(256 * 0.9)
 png_bytes = cairosvg.svg2png(url='/work/logo.svg', output_width=inner, output_height=inner)
 inner_img = Image.open(io.BytesIO(png_bytes)).convert('RGBA')
-canvas = Image.new('RGBA', (256, 256), (26, 26, 46, 255))  # #1a1a2e dark background
+r, g, b, a = inner_img.split()
+rgb_inv = ImageOps.invert(Image.merge('RGB', (r, g, b)))
+inverted = Image.merge('RGBA', (*rgb_inv.split(), a))
+canvas = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
 offset = (256 - inner) // 2
-canvas.paste(inner_img, (offset, offset), inner_img)
+canvas.paste(inverted, (offset, offset), inverted)
 canvas.save('/work/favicon.ico', format='ICO', sizes=[(16,16),(32,32),(48,48),(256,256)])
 print('Done')
 EOF

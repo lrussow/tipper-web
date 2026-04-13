@@ -1,0 +1,330 @@
+<div class="account-page">
+
+  <!-- ============================================================ -->
+  <!-- Recovery Mode (password reset link from email)              -->
+  <!-- ============================================================ -->
+  @if (vm.isRecoveryMode) {
+    <div class="auth-card">
+      <h2 class="auth-title">Set New Password</h2>
+      @if (vm.passwordError) {
+        <p class="form-error" id="account-password-error">{{ vm.passwordError }}</p>
+      }
+      @if (vm.passwordSuccess) {
+        <p class="form-success" id="account-password-success">{{ vm.passwordSuccess }}</p>
+      }
+      <label class="form-label" for="recovery-new-password">New Password</label>
+      <dx-text-box
+        id="recovery-new-password"
+        mode="password"
+        placeholder="New password"
+        [(value)]="vm.newPassword">
+      </dx-text-box>
+      <label class="form-label" for="recovery-confirm-password">Confirm Password</label>
+      <dx-text-box
+        id="recovery-confirm-password"
+        mode="password"
+        placeholder="Confirm new password"
+        [(value)]="vm.confirmPassword">
+      </dx-text-box>
+      <dx-button
+        id="account-set-password-btn"
+        text="Set Password"
+        type="default"
+        stylingMode="contained"
+        [disabled]="vm.passwordLoading"
+        (onClick)="vm.changePassword()">
+      </dx-button>
+    </div>
+  }
+
+  <!-- ============================================================ -->
+  <!-- Unauthenticated: Sign-In Panel                               -->
+  <!-- ============================================================ -->
+  @else if (!vm.session) {
+    <div class="auth-card">
+      <h2 class="auth-title">Sign In to Your Account</h2>
+
+      @if (vm.authError) {
+        <p class="form-error" id="account-auth-error">{{ vm.authError }}</p>
+      }
+      @if (vm.authSuccess) {
+        <p class="form-success" id="account-auth-success">{{ vm.authSuccess }}</p>
+      }
+
+      <!-- OAuth Buttons -->
+      <div class="oauth-buttons">
+        <button id="account-signin-google" class="oauth-btn oauth-google" (click)="vm.signInWithOAuth('google')" [disabled]="vm.authLoading">
+          <img src="assets/oauth/google.svg" alt="" class="oauth-icon" /> Continue with Google
+        </button>
+        <button id="account-signin-apple" class="oauth-btn oauth-apple" (click)="vm.signInWithOAuth('apple')" [disabled]="vm.authLoading">
+          <img src="assets/oauth/apple.svg" alt="" class="oauth-icon" /> Continue with Apple
+        </button>
+        <button id="account-signin-facebook" class="oauth-btn oauth-facebook" (click)="vm.signInWithOAuth('facebook')" [disabled]="vm.authLoading">
+          <img src="assets/oauth/facebook.svg" alt="" class="oauth-icon" /> Continue with Facebook
+        </button>
+        <button id="account-signin-twitter" class="oauth-btn oauth-twitter" (click)="vm.signInWithOAuth('twitter')" [disabled]="vm.authLoading">
+          <img src="assets/oauth/twitter.svg" alt="" class="oauth-icon" /> Continue with X / Twitter
+        </button>
+      </div>
+
+      <div class="divider"><span>or</span></div>
+
+      <!-- Email / Password Form -->
+      @if (vm.signInMode === 'password') {
+        <div class="email-signin">
+          <label class="form-label" for="account-email">Email</label>
+          <dx-text-box
+            id="account-email"
+            mode="email"
+            placeholder="you@example.com"
+            [(value)]="vm.loginEmail">
+          </dx-text-box>
+          <label class="form-label" for="account-password">Password</label>
+          <dx-text-box
+            id="account-password"
+            mode="password"
+            placeholder="Password"
+            [(value)]="vm.loginPassword">
+          </dx-text-box>
+          <dx-button
+            id="account-signin-btn"
+            text="Sign In"
+            type="default"
+            stylingMode="contained"
+            [disabled]="vm.authLoading"
+            (onClick)="vm.signInWithPassword()">
+          </dx-button>
+          <button id="account-forgot-link" class="link-btn" (click)="vm.signInMode = 'forgot'">
+            Forgot password?
+          </button>
+        </div>
+      }
+
+      <!-- Forgot Password Form -->
+      @if (vm.signInMode === 'forgot') {
+        <div class="email-signin">
+          <label class="form-label" for="account-forgot-email">Email</label>
+          <dx-text-box
+            id="account-forgot-email"
+            mode="email"
+            placeholder="you@example.com"
+            [(value)]="vm.loginEmail">
+          </dx-text-box>
+          <dx-button
+            id="account-reset-btn"
+            text="Send Reset Email"
+            type="default"
+            stylingMode="contained"
+            [disabled]="vm.authLoading"
+            (onClick)="vm.sendForgotPassword()">
+          </dx-button>
+          <button id="account-back-link" class="link-btn" (click)="vm.signInMode = 'password'">
+            ← Back to sign in
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ============================================================ -->
+  <!-- Authenticated: Account Dashboard                             -->
+  <!-- ============================================================ -->
+  @else {
+    <div class="account-dashboard">
+      <div class="dashboard-header">
+        <h1 class="dashboard-title">My Account</h1>
+        <dx-button
+          id="account-signout-btn"
+          text="Sign Out"
+          type="normal"
+          stylingMode="outlined"
+          (onClick)="vm.signOut()">
+        </dx-button>
+      </div>
+
+      @if (vm.profileLoading) {
+        <div class="loading-wrap">
+          <dx-load-indicator id="account-loading" [visible]="true"></dx-load-indicator>
+        </div>
+      } @else {
+        <dx-tab-panel
+          id="account-tab-panel"
+          [dataSource]="['Profile', 'Address', 'Stripe', 'Transactions']"
+          [selectedIndex]="0"
+          [animationEnabled]="true">
+
+          <!-- ---- Profile Tab ---- -->
+          <dxi-item title="Profile">
+            <div class="tab-content">
+              @if (vm.profile) {
+                <p class="profile-email" id="account-profile-email">{{ vm.profile.email }}</p>
+              }
+              <h3 class="section-heading">Change Password</h3>
+              @if (vm.passwordError) {
+                <p class="form-error" id="account-change-password-error">{{ vm.passwordError }}</p>
+              }
+              @if (vm.passwordSuccess) {
+                <p class="form-success" id="account-change-password-success">{{ vm.passwordSuccess }}</p>
+              }
+              <label class="form-label" for="profile-new-password">New Password</label>
+              <dx-text-box
+                id="profile-new-password"
+                mode="password"
+                placeholder="New password"
+                [(value)]="vm.newPassword">
+              </dx-text-box>
+              <label class="form-label" for="profile-confirm-password">Confirm Password</label>
+              <dx-text-box
+                id="profile-confirm-password"
+                mode="password"
+                placeholder="Confirm new password"
+                [(value)]="vm.confirmPassword">
+              </dx-text-box>
+              <dx-button
+                id="account-change-password-btn"
+                text="Change Password"
+                type="default"
+                stylingMode="contained"
+                [disabled]="vm.passwordLoading"
+                (onClick)="vm.changePassword()">
+              </dx-button>
+            </div>
+          </dxi-item>
+
+          <!-- ---- Address Tab ---- -->
+          <dxi-item title="Address">
+            <div class="tab-content">
+              @if (vm.addressError) {
+                <p class="form-error" id="account-address-error">{{ vm.addressError }}</p>
+              }
+              @if (vm.addressSuccess) {
+                <p class="form-success" id="account-address-success">{{ vm.addressSuccess }}</p>
+              }
+              <label class="form-label" for="address-line1">Address Line 1</label>
+              <dx-text-box id="address-line1" placeholder="123 Main St" [(value)]="vm.addressForm.line1"></dx-text-box>
+
+              <label class="form-label" for="address-line2">Address Line 2</label>
+              <dx-text-box id="address-line2" placeholder="Suite 100" [(value)]="vm.addressForm.line2"></dx-text-box>
+
+              <label class="form-label" for="address-city">City</label>
+              <dx-text-box id="address-city" placeholder="City" [(value)]="vm.addressForm.city"></dx-text-box>
+
+              <label class="form-label" for="address-postal">Postal / ZIP Code</label>
+              <dx-text-box id="address-postal" placeholder="Postal Code" [(value)]="vm.addressForm.postal_code"></dx-text-box>
+
+              <label class="form-label" for="address-country">Country (ISO2)</label>
+              <dx-text-box id="address-country" placeholder="e.g. CA or US" [(value)]="vm.addressForm.country_iso2"></dx-text-box>
+
+              <label class="form-label" for="address-state">Province / State Code</label>
+              <dx-text-box id="address-state" placeholder="e.g. ON or NY" [(value)]="vm.addressForm.subdivision_code"></dx-text-box>
+
+              <dx-button
+                id="account-save-address-btn"
+                text="Save Address"
+                type="default"
+                stylingMode="contained"
+                [disabled]="vm.addressLoading"
+                (onClick)="vm.saveAddress()">
+              </dx-button>
+            </div>
+          </dxi-item>
+
+          <!-- ---- Stripe Tab ---- -->
+          <dxi-item title="Stripe">
+            <div class="tab-content">
+              @if (vm.profile) {
+                <div class="stripe-status" id="account-stripe-status">
+                  <div class="status-row">
+                    <span class="status-label">Account Connected</span>
+                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_onboarding_complete" [class.badge-warn]="!vm.profile.stripe_onboarding_complete">
+                      {{ vm.profile.stripe_onboarding_complete ? 'Connected' : 'Not Connected' }}
+                    </span>
+                  </div>
+                  <div class="status-row">
+                    <span class="status-label">Charges Enabled</span>
+                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_charges_enabled" [class.badge-warn]="!vm.profile.stripe_charges_enabled">
+                      {{ vm.profile.stripe_charges_enabled ? 'Yes' : 'No' }}
+                    </span>
+                  </div>
+                  <div class="status-row">
+                    <span class="status-label">Payouts Enabled</span>
+                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_payouts_enabled" [class.badge-warn]="!vm.profile.stripe_payouts_enabled">
+                      {{ vm.profile.stripe_payouts_enabled ? 'Yes' : 'No' }}
+                    </span>
+                  </div>
+                </div>
+              }
+              @if (vm.stripeError) {
+                <p class="form-error" id="account-stripe-error">{{ vm.stripeError }}</p>
+              }
+              <p class="stripe-hint">Update your Stripe profile, banking, or identity information on the Stripe-hosted page.</p>
+              <dx-button
+                id="account-stripe-btn"
+                text="Update Stripe Info"
+                type="default"
+                stylingMode="contained"
+                [disabled]="vm.stripeLoading"
+                (onClick)="vm.openStripeOnboarding()">
+              </dx-button>
+            </div>
+          </dxi-item>
+
+          <!-- ---- Transactions Tab ---- -->
+          <dxi-item title="Transactions">
+            <div class="tab-content">
+              <div class="tx-filters">
+                <div class="tx-filter-field">
+                  <label class="form-label" for="tx-from-date">From</label>
+                  <dx-date-box
+                    id="tx-from-date"
+                    type="date"
+                    [(value)]="vm.txFromDate"
+                    (onValueChanged)="vm.reloadTransactions()">
+                  </dx-date-box>
+                </div>
+                <div class="tx-filter-field">
+                  <label class="form-label" for="tx-to-date">To</label>
+                  <dx-date-box
+                    id="tx-to-date"
+                    type="date"
+                    [(value)]="vm.txToDate"
+                    (onValueChanged)="vm.reloadTransactions()">
+                  </dx-date-box>
+                </div>
+              </div>
+
+              @if (vm.transactionError) {
+                <p class="form-error" id="account-tx-error">{{ vm.transactionError }}</p>
+              }
+
+              <dx-data-grid
+                id="account-transaction-grid"
+                [dataSource]="vm.transactionDataSource"
+                [remoteOperations]="{ paging: true }"
+                [showBorders]="true"
+                [columnAutoWidth]="true"
+                [wordWrapEnabled]="false">
+
+                <dxi-column dataField="created_at" caption="Date" dataType="datetime" [width]="180"></dxi-column>
+                <dxi-column dataField="currency" caption="Currency" [width]="80"></dxi-column>
+                <dxi-column dataField="total_cents" caption="Total" cellTemplate="centsTpl"></dxi-column>
+                <dxi-column dataField="provider_fee_cents" caption="Provider Fee" cellTemplate="centsTpl"></dxi-column>
+                <dxi-column dataField="tipper_fee_cents" caption="Tipper Fee" cellTemplate="centsTpl"></dxi-column>
+                <dxi-column dataField="net_cents" caption="Net" cellTemplate="centsTpl"></dxi-column>
+
+                <div *dxTemplate="let cell of 'centsTpl'">
+                  {{ vm.formatCents(cell.value, cell.data.currency) }}
+                </div>
+
+                <dxo-paging [pageSize]="vm.transactionPageSize"></dxo-paging>
+                <dxo-pager [showPageSizeSelector]="false" [showInfo]="true"></dxo-pager>
+              </dx-data-grid>
+            </div>
+          </dxi-item>
+
+        </dx-tab-panel>
+      }
+    </div>
+  }
+
+</div>

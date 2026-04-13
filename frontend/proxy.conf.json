@@ -3,5 +3,13 @@
     "target": "http://localhost:8000",
     "secure": false,
     "changeOrigin": true
+  },
+  "/tipper": {
+    "target": "http://localhost:8001",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/tipper": ""
+    }
   }
 }

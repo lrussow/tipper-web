@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { SupabaseService } from '../../services/supabase.service';
-import { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
 	selector: 'app-navbar',
@@ -16,11 +15,11 @@ export class Navbar implements OnInit, OnDestroy {
 	menuOpen = false;
 	isSignedIn = false;
 
-	private authSub: { data: { subscription: { unsubscribe: () => void } } } | null = null;
+	private sessionSub?: Subscription;
 
 	constructor(
 		private router: Router,
-		private supabase: SupabaseService,
+		private auth: AuthService,
 	) {
 		router.events.subscribe(() => {
 			this.menuOpen = false;
@@ -28,16 +27,14 @@ export class Navbar implements OnInit, OnDestroy {
 	}
 
 	async ngOnInit(): Promise<void> {
-		const session = await this.supabase.getSession();
-		this.isSignedIn = !!session;
-
-		this.authSub = this.supabase.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
+		this.isSignedIn = !!this.auth.getSession();
+		this.sessionSub = this.auth.session$.subscribe(session => {
 			this.isSignedIn = !!session;
 		});
 	}
 
 	ngOnDestroy(): void {
-		this.authSub?.data.subscription.unsubscribe();
+		this.sessionSub?.unsubscribe();
 	}
 
 	toggleMenu(): void {
@@ -45,7 +42,7 @@ export class Navbar implements OnInit, OnDestroy {
 	}
 
 	async signOut(): Promise<void> {
-		await this.supabase.signOut();
+		await this.auth.signOut();
 		await this.router.navigate(['/account']);
 	}
 }

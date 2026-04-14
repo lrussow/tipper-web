@@ -12,46 +12,46 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
-import { SupabaseService } from '../../services/supabase.service';
+import { AuthService } from '../../services/auth.service';
 import { AccountViewModel } from '../../viewmodels/account.view-model';
 
 @Component({
-	selector: 'app-account',
-	standalone: true,
-	imports: [
-		CommonModule,
-		FormsModule,
-		MatTabsModule,
-		MatButtonModule,
-		MatInputModule,
-		MatFormFieldModule,
-		MatDatepickerModule,
-		MatNativeDateModule,
-		MatTableModule,
-		MatPaginatorModule,
-		MatProgressSpinnerModule,
-		MatIconModule,
-	],
-	templateUrl: './account.html',
-	styleUrl: './account.scss',
+selector: 'app-account',
+standalone: true,
+imports: [
+CommonModule,
+FormsModule,
+MatTabsModule,
+MatButtonModule,
+MatInputModule,
+MatFormFieldModule,
+MatDatepickerModule,
+MatNativeDateModule,
+MatTableModule,
+MatPaginatorModule,
+MatProgressSpinnerModule,
+MatIconModule,
+],
+templateUrl: './account.html',
+styleUrl: './account.scss',
 })
 export class Account implements OnInit {
-	vm: AccountViewModel;
+vm: AccountViewModel;
 
-	@ViewChild(MatPaginator) paginator?: MatPaginator;
+@ViewChild(MatPaginator) paginator?: MatPaginator;
 
-	constructor(
-		private supabase: SupabaseService,
-		private http: HttpClient,
-	) {
-		this.vm = new AccountViewModel(supabase, http);
-	}
+constructor(
+private auth: AuthService,
+private http: HttpClient,
+) {
+this.vm = new AccountViewModel(auth, http);
+}
 
-	async ngOnInit(): Promise<void> {
-		await this.vm.init();
-	}
+async ngOnInit(): Promise<void> {
+await this.vm.init();
+}
 
-	onPageChange(event: PageEvent): void {
-		this.vm.onPageChange(event.pageIndex, event.pageSize);
-	}
+onPageChange(event: PageEvent): void {
+this.vm.onPageChange(event.pageIndex, event.pageSize);
+}
 }

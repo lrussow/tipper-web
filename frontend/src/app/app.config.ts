@@ -3,9 +3,7 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { routes } from './app.routes';
-import { SupabaseService } from './services/supabase.service';
-
-export const API_BASE = '/api';
+import { AuthService } from './services/auth.service';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -13,6 +11,6 @@ export const appConfig: ApplicationConfig = {
 		provideRouter(routes),
 		provideHttpClient(),
 		provideAnimationsAsync(),
-		SupabaseService,
+		AuthService,
 	],
 };

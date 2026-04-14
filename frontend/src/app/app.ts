@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './shared/navbar/navbar';
+import { AuthService } from './services/auth.service';
 
 @Component({
 	selector: 'app-root',
@@ -14,6 +15,12 @@ import { Navbar } from './shared/navbar/navbar';
 	`,
 	styleUrl: './app.scss',
 })
-export class App {
+export class App implements OnInit {
 	title = 'The Tipper';
+
+	constructor(private auth: AuthService) {}
+
+	async ngOnInit(): Promise<void> {
+		await this.auth.init();
+	}
 }

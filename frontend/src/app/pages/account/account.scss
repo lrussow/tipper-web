@@ -233,6 +233,32 @@ font-size: 0.95rem;
 margin: 0;
 }
 
+// ---- Account Info ----
+
+.account-info {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-bottom: 20px;
+}
+
+.info-row {
+display: flex;
+align-items: baseline;
+gap: 12px;
+}
+
+.info-label {
+color: rgba(255, 255, 255, 0.55);
+font-size: 0.85rem;
+min-width: 80px;
+}
+
+.info-value {
+color: #fff;
+font-size: 0.95rem;
+}
+
 // ---- Stripe Status ----
 
 .stripe-status {

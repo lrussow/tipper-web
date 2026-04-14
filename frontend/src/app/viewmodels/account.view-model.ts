@@ -3,10 +3,11 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService, AuthSession } from '../services/auth.service';
 import { CustomerProfile } from '../models/customer-profile.model';
 import { AddressForm } from '../models/address-form.model';
+import { AccountContactForm } from '../models/account-contact-form.model';
 import { Transaction, TransactionPage } from '../models/transaction.model';
 import { environment } from '../../environments/environment';
 
-export type AccountTab = 'profile' | 'address' | 'stripe' | 'transactions';
+export type AccountTab = 'account' | 'change-password' | 'address' | 'contact' | 'stripe' | 'transactions';
 export type SignInMode = 'password' | 'forgot';
 
 export const TX_COLUMNS = ['created_at', 'currency', 'total_cents', 'provider_fee_cents', 'tipper_fee_cents', 'net_cents'];
@@ -14,7 +15,7 @@ export const TX_COLUMNS = ['created_at', 'currency', 'total_cents', 'provider_fe
 export class AccountViewModel {
 session: AuthSession | null = null;
 isRecoveryMode = false;
-activeTab: AccountTab = 'profile';
+activeTab: AccountTab = 'account';
 
 // Auth state
 signInMode: SignInMode = 'password';
@@ -45,6 +46,17 @@ subdivision_code: '',
 addressError = '';
 addressSuccess = '';
 addressLoading = false;
+
+// Contact tab
+contactForm: AccountContactForm = {
+first_name: '',
+last_name: '',
+phone: '',
+email: '',
+};
+contactError = '';
+contactSuccess = '';
+contactLoading = false;
 
 // Stripe tab
 stripeLoading = false;
@@ -200,6 +212,12 @@ country_iso2: profile.address.country_iso2 ?? '',
 subdivision_code: profile.address.subdivision_code ?? '',
 };
 }
+this.contactForm = {
+first_name: profile.first_name ?? '',
+last_name: profile.last_name ?? '',
+phone: profile.phone ?? '',
+email: profile.email ?? '',
+};
 await this.loadTransactions(0, this.txPageSize);
 } catch {
 // profile load failure is non-fatal
@@ -229,6 +247,30 @@ await this.loadProfile();
 this.addressError = this.extractError(e, 'Failed to save address.');
 } finally {
 this.addressLoading = false;
+}
+}
+
+// ---- Contact ----
+
+async saveContact(): Promise<void> {
+if (!this.profile) return;
+this.contactError = '';
+this.contactSuccess = '';
+this.contactLoading = true;
+try {
+await firstValueFrom(
+this.http.patch(
+`${environment.tipperApiBase}/account/contact`,
+{ customer_id: this.profile.customer_id, ...this.contactForm },
+{ headers: this.authHeaders() }
+)
+);
+this.contactSuccess = 'Contact info saved successfully.';
+await this.loadProfile();
+} catch (e: unknown) {
+this.contactError = this.extractError(e, 'Failed to save contact info.');
+} finally {
+this.contactLoading = false;
 }
 }
 

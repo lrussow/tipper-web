@@ -113,13 +113,55 @@
       } @else {
         <mat-tab-group id="account-tab-panel" animationDuration="200ms">
 
-          <!-- ---- Profile Tab ---- -->
-          <mat-tab label="Profile">
+          <!-- ---- Account Tab (default) ---- -->
+          <mat-tab label="Account">
             <div class="tab-content">
               @if (vm.profile) {
-                <p class="profile-email" id="account-profile-email">{{ vm.profile.email }}</p>
+                <div class="account-info">
+                  <div class="info-row">
+                    <span class="info-label">Email</span>
+                    <span class="info-value" id="account-profile-email">{{ vm.profile.email }}</span>
+                  </div>
+                  @if (vm.profile.first_name || vm.profile.last_name) {
+                    <div class="info-row">
+                      <span class="info-label">Name</span>
+                      <span class="info-value">{{ vm.profile.first_name }} {{ vm.profile.last_name }}</span>
+                    </div>
+                  }
+                  @if (vm.profile.phone) {
+                    <div class="info-row">
+                      <span class="info-label">Phone</span>
+                      <span class="info-value">{{ vm.profile.phone }}</span>
+                    </div>
+                  }
+                </div>
+                <div class="stripe-status" id="account-stripe-status-summary">
+                  <div class="status-row">
+                    <span class="status-label">Stripe Connected</span>
+                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_onboarding_complete" [class.badge-warn]="!vm.profile.stripe_onboarding_complete">
+                      {{ vm.profile.stripe_onboarding_complete ? 'Connected' : 'Not Connected' }}
+                    </span>
+                  </div>
+                  <div class="status-row">
+                    <span class="status-label">Charges Enabled</span>
+                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_charges_enabled" [class.badge-warn]="!vm.profile.stripe_charges_enabled">
+                      {{ vm.profile.stripe_charges_enabled ? 'Yes' : 'No' }}
+                    </span>
+                  </div>
+                  <div class="status-row">
+                    <span class="status-label">Payouts Enabled</span>
+                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_payouts_enabled" [class.badge-warn]="!vm.profile.stripe_payouts_enabled">
+                      {{ vm.profile.stripe_payouts_enabled ? 'Yes' : 'No' }}
+                    </span>
+                  </div>
+                </div>
               }
-              <h3 class="section-heading">Change Password</h3>
+            </div>
+          </mat-tab>
+
+          <!-- ---- Change Password Tab ---- -->
+          <mat-tab label="Change Password">
+            <div class="tab-content">
               @if (vm.passwordError) {
                 <p class="form-error" id="account-change-password-error">{{ vm.passwordError }}</p>
               }
@@ -175,6 +217,37 @@
               </mat-form-field>
               <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.addressLoading" (click)="vm.saveAddress()">
                 @if (vm.addressLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Address }
+              </button>
+            </div>
+          </mat-tab>
+
+          <!-- ---- Contact Tab ---- -->
+          <mat-tab label="Contact">
+            <div class="tab-content">
+              @if (vm.contactError) {
+                <p class="form-error" id="account-contact-error">{{ vm.contactError }}</p>
+              }
+              @if (vm.contactSuccess) {
+                <p class="form-success" id="account-contact-success">{{ vm.contactSuccess }}</p>
+              }
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>First Name</mat-label>
+                <input id="contact-first-name" matInput placeholder="First name" [(ngModel)]="vm.contactForm.first_name" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Last Name</mat-label>
+                <input id="contact-last-name" matInput placeholder="Last name" [(ngModel)]="vm.contactForm.last_name" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Phone</mat-label>
+                <input id="contact-phone" matInput type="tel" placeholder="+1 555 000 0000" [(ngModel)]="vm.contactForm.phone" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Email</mat-label>
+                <input id="contact-email" matInput type="email" placeholder="you@example.com" [(ngModel)]="vm.contactForm.email" />
+              </mat-form-field>
+              <button id="account-save-contact-btn" mat-raised-button color="primary" [disabled]="vm.contactLoading" (click)="vm.saveContact()">
+                @if (vm.contactLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Contact Info }
               </button>
             </div>
           </mat-tab>

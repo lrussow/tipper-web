@@ -1,16 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Session, AuthChangeEvent } from '@supabase/supabase-js';
-import CustomStore from 'devextreme/data/custom_store';
-import DataSource from 'devextreme/data/data_source';
 import { SupabaseService } from '../services/supabase.service';
 import { CustomerProfile } from '../models/customer-profile.model';
 import { AddressForm } from '../models/address-form.model';
-import { TransactionPage } from '../models/transaction.model';
+import { Transaction, TransactionPage } from '../models/transaction.model';
 import { environment } from '../../environments/environment';
 
 export type AccountTab = 'profile' | 'address' | 'stripe' | 'transactions';
 export type SignInMode = 'password' | 'forgot';
+
+export const TX_COLUMNS = ['created_at', 'currency', 'total_cents', 'provider_fee_cents', 'tipper_fee_cents', 'net_cents'];
 
 export class AccountViewModel {
 	session: Session | null = null;
@@ -52,11 +52,15 @@ export class AccountViewModel {
 	stripeError = '';
 
 	// Transactions tab
-	transactionDataSource: DataSource | null = null;
-	transactionPageSize = 20;
+	transactions: Transaction[] = [];
+	txTotalCount = 0;
+	txPageIndex = 0;
+	txPageSize = 20;
 	txFromDate: Date | null = null;
 	txToDate: Date | null = null;
 	transactionError = '';
+	txLoading = false;
+	readonly txColumns = TX_COLUMNS;
 
 	constructor(
 		private supabase: SupabaseService,
@@ -66,7 +70,6 @@ export class AccountViewModel {
 	async init(): Promise<void> {
 		this.session = await this.supabase.getSession();
 
-		// Detect recovery (password reset) or OAuth hash fragment
 		const hash = window.location.hash;
 		if (hash.includes('type=recovery')) {
 			this.isRecoveryMode = true;
@@ -77,7 +80,6 @@ export class AccountViewModel {
 			await this.loadProfile();
 		}
 
-		// Listen for auth state changes (e.g., OAuth redirect)
 		this.supabase.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
 			this.session = session;
 			if (event === 'PASSWORD_RECOVERY') {
@@ -87,7 +89,8 @@ export class AccountViewModel {
 				await this.loadProfile();
 			} else if (event === 'SIGNED_OUT') {
 				this.profile = null;
-				this.transactionDataSource = null;
+				this.transactions = [];
+				this.txTotalCount = 0;
 				this.isRecoveryMode = false;
 			}
 		});
@@ -199,9 +202,9 @@ export class AccountViewModel {
 					subdivision_code: profile.address.subdivision_code ?? '',
 				};
 			}
-			this.buildTransactionDataSource();
+			await this.loadTransactions(0, this.txPageSize);
 		} catch {
-			// profile load failure is non-fatal; user can still see sign-out etc.
+			// profile load failure is non-fatal
 		} finally {
 			this.profileLoading = false;
 		}
@@ -254,39 +257,35 @@ export class AccountViewModel {
 
 	// ---- Transactions ----
 
-	private buildTransactionDataSource(): void {
+	async loadTransactions(pageIndex: number, pageSize: number): Promise<void> {
 		if (!this.profile) return;
-		const customerId = this.profile.customer_id;
-		const store = new CustomStore({
-			key: 'id',
-			load: async (loadOptions) => {
-				this.transactionError = '';
-				const take = loadOptions.take ?? this.transactionPageSize;
-				const skip = loadOptions.skip ?? 0;
-				const page = Math.floor(skip / take) + 1;
-				try {
-					let url = `${environment.tipperApiBase}/account/transactions?customer_id=${customerId}&page=${page}&page_size=${take}`;
-					if (this.txFromDate) url += `&from_date=${this.txFromDate.toISOString().split('T')[0]}`;
-					if (this.txToDate) url += `&to_date=${this.txToDate.toISOString().split('T')[0]}`;
-					const resp = await firstValueFrom(
-						this.http.get<TransactionPage>(url, { headers: this.authHeaders() })
-					);
-					return { data: resp.items, totalCount: resp.total };
-				} catch (e: unknown) {
-					this.transactionError = this.extractError(e, 'Failed to load transactions.');
-					return { data: [], totalCount: 0 };
-				}
-			},
-		});
-		this.transactionDataSource = new DataSource({ store, pageSize: this.transactionPageSize });
+		this.transactionError = '';
+		this.txLoading = true;
+		this.txPageIndex = pageIndex;
+		this.txPageSize = pageSize;
+		try {
+			const page = pageIndex + 1;
+			let url = `${environment.tipperApiBase}/account/transactions?customer_id=${this.profile.customer_id}&page=${page}&page_size=${pageSize}`;
+			if (this.txFromDate) url += `&from_date=${this.txFromDate.toISOString().split('T')[0]}`;
+			if (this.txToDate) url += `&to_date=${this.txToDate.toISOString().split('T')[0]}`;
+			const resp = await firstValueFrom(
+				this.http.get<TransactionPage>(url, { headers: this.authHeaders() })
+			);
+			this.transactions = resp.items;
+			this.txTotalCount = resp.total;
+		} catch (e: unknown) {
+			this.transactionError = this.extractError(e, 'Failed to load transactions.');
+		} finally {
+			this.txLoading = false;
+		}
 	}
 
-	reloadTransactions(): void {
-		if (this.transactionDataSource) {
-			this.transactionDataSource.reload();
-		} else {
-			this.buildTransactionDataSource();
-		}
+	onPageChange(pageIndex: number, pageSize: number): void {
+		this.loadTransactions(pageIndex, pageSize);
+	}
+
+	onDateFilterChange(): void {
+		this.loadTransactions(0, this.txPageSize);
 	}
 
 	formatCents(cents: number, currency: string): string {

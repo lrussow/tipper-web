@@ -2,20 +2,19 @@
 
 ## Project Overview
 
-**tipper-web** is the marketing website for **The Tipper™ by Tip & Tap** — a contactless tipping app powered by Stripe. It is built with:
+**tipper-web** is the marketing website for **The Tipper™ by Tip & Tap** — a contactless tipping app powered by Stripe. It spans two repositories:
 
-- **Frontend**: Angular (standalone components, SCSS, no Angular Material — use DevExtreme)
-- **Backend**: Python FastAPI with Pydantic models and CORS enabled for `localhost:4200`
+- **tipper-web** (this repo) — Angular frontend (`frontend/`)
+- **thetipper-backend** — Python FastAPI backend, located at `C:\src\thetipper-backend`
+
+The frontend is built with Angular (standalone components, SCSS, no Angular Material — use DevExtreme). The backend is Python FastAPI with Pydantic models, deployed at `https://stripe.the-tipper.com`.
 
 ---
 
 ## Architecture
 
 ```
-tipper-web/
-├── backend/               ← FastAPI
-│   ├── main.py
-│   └── requirements.txt
+tipper-web/             ← THIS REPO (frontend only)
 └── frontend/              ← Angular
     └── src/app/
         ├── models/                        ← interfaces & data types
@@ -37,6 +36,10 @@ tipper-web/
         │       └── contact.component.scss
         └── shared/
             └── navbar/
+
+thetipper-backend/      ← SEPARATE REPO at C:\src\thetipper-backend
+└── app/
+    └── main.py            ← FastAPI app (all API routes live here)
 ```
 
 ---
@@ -141,26 +144,28 @@ export class HomeComponent implements OnInit {
 
 ## Backend: FastAPI Standards
 
+> **Repo:** `C:\src\thetipper-backend` — all backend code lives here, not in this repo.
+> **Deployed at:** `https://stripe.the-tipper.com`
+
 - Pydantic `BaseModel` for all request/response models
 - CORS enabled for `http://localhost:4200` (dev)
-- All routes prefixed with `/api`
 - Use `async def` for all route handlers
-- Never commit `appsettings.json` or `.env` with real credentials
+- Never commit `.env` with real credentials — use `.env.example`
 
 ---
 
 ## Running Locally
 
 ```bash
-# Backend
-cd backend
+# Backend (separate repo)
+cd C:\src\thetipper-backend
 pip install -r requirements.txt
-uvicorn main:app --reload
+uvicorn app.main:app --reload   # runs on localhost:8001
 
 # Frontend
 cd frontend
 npm install
-npm start    # proxies /api → localhost:8000
+npm start    # proxies /tipper → localhost:8001
 ```
 
 ---

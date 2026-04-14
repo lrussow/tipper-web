@@ -12,28 +12,17 @@
       @if (vm.passwordSuccess) {
         <p class="form-success" id="account-password-success">{{ vm.passwordSuccess }}</p>
       }
-      <label class="form-label" for="recovery-new-password">New Password</label>
-      <dx-text-box
-        id="recovery-new-password"
-        mode="password"
-        placeholder="New password"
-        [(value)]="vm.newPassword">
-      </dx-text-box>
-      <label class="form-label" for="recovery-confirm-password">Confirm Password</label>
-      <dx-text-box
-        id="recovery-confirm-password"
-        mode="password"
-        placeholder="Confirm new password"
-        [(value)]="vm.confirmPassword">
-      </dx-text-box>
-      <dx-button
-        id="account-set-password-btn"
-        text="Set Password"
-        type="default"
-        stylingMode="contained"
-        [disabled]="vm.passwordLoading"
-        (onClick)="vm.changePassword()">
-      </dx-button>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>New Password</mat-label>
+        <input id="recovery-new-password" matInput type="password" placeholder="New password" [(ngModel)]="vm.newPassword" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Confirm Password</mat-label>
+        <input id="recovery-confirm-password" matInput type="password" placeholder="Confirm new password" [(ngModel)]="vm.confirmPassword" />
+      </mat-form-field>
+      <button id="account-set-password-btn" mat-raised-button color="primary" [disabled]="vm.passwordLoading" (click)="vm.changePassword()">
+        @if (vm.passwordLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Set Password }
+      </button>
     </div>
   }
 
@@ -72,28 +61,17 @@
       <!-- Email / Password Form -->
       @if (vm.signInMode === 'password') {
         <div class="email-signin">
-          <label class="form-label" for="account-email">Email</label>
-          <dx-text-box
-            id="account-email"
-            mode="email"
-            placeholder="you@example.com"
-            [(value)]="vm.loginEmail">
-          </dx-text-box>
-          <label class="form-label" for="account-password">Password</label>
-          <dx-text-box
-            id="account-password"
-            mode="password"
-            placeholder="Password"
-            [(value)]="vm.loginPassword">
-          </dx-text-box>
-          <dx-button
-            id="account-signin-btn"
-            text="Sign In"
-            type="default"
-            stylingMode="contained"
-            [disabled]="vm.authLoading"
-            (onClick)="vm.signInWithPassword()">
-          </dx-button>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input id="account-email" matInput type="email" placeholder="you@example.com" [(ngModel)]="vm.loginEmail" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input id="account-password" matInput type="password" placeholder="Password" [(ngModel)]="vm.loginPassword" />
+          </mat-form-field>
+          <button id="account-signin-btn" mat-raised-button color="primary" [disabled]="vm.authLoading" (click)="vm.signInWithPassword()">
+            @if (vm.authLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Sign In }
+          </button>
           <button id="account-forgot-link" class="link-btn" (click)="vm.signInMode = 'forgot'">
             Forgot password?
           </button>
@@ -103,21 +81,13 @@
       <!-- Forgot Password Form -->
       @if (vm.signInMode === 'forgot') {
         <div class="email-signin">
-          <label class="form-label" for="account-forgot-email">Email</label>
-          <dx-text-box
-            id="account-forgot-email"
-            mode="email"
-            placeholder="you@example.com"
-            [(value)]="vm.loginEmail">
-          </dx-text-box>
-          <dx-button
-            id="account-reset-btn"
-            text="Send Reset Email"
-            type="default"
-            stylingMode="contained"
-            [disabled]="vm.authLoading"
-            (onClick)="vm.sendForgotPassword()">
-          </dx-button>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input id="account-forgot-email" matInput type="email" placeholder="you@example.com" [(ngModel)]="vm.loginEmail" />
+          </mat-form-field>
+          <button id="account-reset-btn" mat-raised-button color="primary" [disabled]="vm.authLoading" (click)="vm.sendForgotPassword()">
+            @if (vm.authLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Send Reset Email }
+          </button>
           <button id="account-back-link" class="link-btn" (click)="vm.signInMode = 'password'">
             ← Back to sign in
           </button>
@@ -133,28 +103,18 @@
     <div class="account-dashboard">
       <div class="dashboard-header">
         <h1 class="dashboard-title">My Account</h1>
-        <dx-button
-          id="account-signout-btn"
-          text="Sign Out"
-          type="normal"
-          stylingMode="outlined"
-          (onClick)="vm.signOut()">
-        </dx-button>
+        <button id="account-signout-btn" mat-stroked-button (click)="vm.signOut()">Sign Out</button>
       </div>
 
       @if (vm.profileLoading) {
         <div class="loading-wrap">
-          <dx-load-indicator id="account-loading" [visible]="true"></dx-load-indicator>
+          <mat-spinner id="account-loading" diameter="48"></mat-spinner>
         </div>
       } @else {
-        <dx-tab-panel
-          id="account-tab-panel"
-          [dataSource]="['Profile', 'Address', 'Stripe', 'Transactions']"
-          [selectedIndex]="0"
-          [animationEnabled]="true">
+        <mat-tab-group id="account-tab-panel" animationDuration="200ms">
 
           <!-- ---- Profile Tab ---- -->
-          <dxi-item title="Profile">
+          <mat-tab label="Profile">
             <div class="tab-content">
               @if (vm.profile) {
                 <p class="profile-email" id="account-profile-email">{{ vm.profile.email }}</p>
@@ -166,33 +126,22 @@
               @if (vm.passwordSuccess) {
                 <p class="form-success" id="account-change-password-success">{{ vm.passwordSuccess }}</p>
               }
-              <label class="form-label" for="profile-new-password">New Password</label>
-              <dx-text-box
-                id="profile-new-password"
-                mode="password"
-                placeholder="New password"
-                [(value)]="vm.newPassword">
-              </dx-text-box>
-              <label class="form-label" for="profile-confirm-password">Confirm Password</label>
-              <dx-text-box
-                id="profile-confirm-password"
-                mode="password"
-                placeholder="Confirm new password"
-                [(value)]="vm.confirmPassword">
-              </dx-text-box>
-              <dx-button
-                id="account-change-password-btn"
-                text="Change Password"
-                type="default"
-                stylingMode="contained"
-                [disabled]="vm.passwordLoading"
-                (onClick)="vm.changePassword()">
-              </dx-button>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>New Password</mat-label>
+                <input id="profile-new-password" matInput type="password" placeholder="New password" [(ngModel)]="vm.newPassword" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Confirm Password</mat-label>
+                <input id="profile-confirm-password" matInput type="password" placeholder="Confirm new password" [(ngModel)]="vm.confirmPassword" />
+              </mat-form-field>
+              <button id="account-change-password-btn" mat-raised-button color="primary" [disabled]="vm.passwordLoading" (click)="vm.changePassword()">
+                @if (vm.passwordLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Change Password }
+              </button>
             </div>
-          </dxi-item>
+          </mat-tab>
 
           <!-- ---- Address Tab ---- -->
-          <dxi-item title="Address">
+          <mat-tab label="Address">
             <div class="tab-content">
               @if (vm.addressError) {
                 <p class="form-error" id="account-address-error">{{ vm.addressError }}</p>
@@ -200,37 +149,38 @@
               @if (vm.addressSuccess) {
                 <p class="form-success" id="account-address-success">{{ vm.addressSuccess }}</p>
               }
-              <label class="form-label" for="address-line1">Address Line 1</label>
-              <dx-text-box id="address-line1" placeholder="123 Main St" [(value)]="vm.addressForm.line1"></dx-text-box>
-
-              <label class="form-label" for="address-line2">Address Line 2</label>
-              <dx-text-box id="address-line2" placeholder="Suite 100" [(value)]="vm.addressForm.line2"></dx-text-box>
-
-              <label class="form-label" for="address-city">City</label>
-              <dx-text-box id="address-city" placeholder="City" [(value)]="vm.addressForm.city"></dx-text-box>
-
-              <label class="form-label" for="address-postal">Postal / ZIP Code</label>
-              <dx-text-box id="address-postal" placeholder="Postal Code" [(value)]="vm.addressForm.postal_code"></dx-text-box>
-
-              <label class="form-label" for="address-country">Country (ISO2)</label>
-              <dx-text-box id="address-country" placeholder="e.g. CA or US" [(value)]="vm.addressForm.country_iso2"></dx-text-box>
-
-              <label class="form-label" for="address-state">Province / State Code</label>
-              <dx-text-box id="address-state" placeholder="e.g. ON or NY" [(value)]="vm.addressForm.subdivision_code"></dx-text-box>
-
-              <dx-button
-                id="account-save-address-btn"
-                text="Save Address"
-                type="default"
-                stylingMode="contained"
-                [disabled]="vm.addressLoading"
-                (onClick)="vm.saveAddress()">
-              </dx-button>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Address Line 1</mat-label>
+                <input id="address-line1" matInput placeholder="123 Main St" [(ngModel)]="vm.addressForm.line1" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Address Line 2</mat-label>
+                <input id="address-line2" matInput placeholder="Suite 100" [(ngModel)]="vm.addressForm.line2" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>City</mat-label>
+                <input id="address-city" matInput placeholder="City" [(ngModel)]="vm.addressForm.city" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Postal / ZIP Code</mat-label>
+                <input id="address-postal" matInput placeholder="Postal Code" [(ngModel)]="vm.addressForm.postal_code" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Country (ISO2)</mat-label>
+                <input id="address-country" matInput placeholder="e.g. CA or US" [(ngModel)]="vm.addressForm.country_iso2" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Province / State Code</mat-label>
+                <input id="address-state" matInput placeholder="e.g. ON or NY" [(ngModel)]="vm.addressForm.subdivision_code" />
+              </mat-form-field>
+              <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.addressLoading" (click)="vm.saveAddress()">
+                @if (vm.addressLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Address }
+              </button>
             </div>
-          </dxi-item>
+          </mat-tab>
 
           <!-- ---- Stripe Tab ---- -->
-          <dxi-item title="Stripe">
+          <mat-tab label="Stripe">
             <div class="tab-content">
               @if (vm.profile) {
                 <div class="stripe-status" id="account-stripe-status">
@@ -258,71 +208,85 @@
                 <p class="form-error" id="account-stripe-error">{{ vm.stripeError }}</p>
               }
               <p class="stripe-hint">Update your Stripe profile, banking, or identity information on the Stripe-hosted page.</p>
-              <dx-button
-                id="account-stripe-btn"
-                text="Update Stripe Info"
-                type="default"
-                stylingMode="contained"
-                [disabled]="vm.stripeLoading"
-                (onClick)="vm.openStripeOnboarding()">
-              </dx-button>
+              <button id="account-stripe-btn" mat-raised-button color="primary" [disabled]="vm.stripeLoading" (click)="vm.openStripeOnboarding()">
+                @if (vm.stripeLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Update Stripe Info }
+              </button>
             </div>
-          </dxi-item>
+          </mat-tab>
 
           <!-- ---- Transactions Tab ---- -->
-          <dxi-item title="Transactions">
+          <mat-tab label="Transactions">
             <div class="tab-content">
               <div class="tx-filters">
-                <div class="tx-filter-field">
-                  <label class="form-label" for="tx-from-date">From</label>
-                  <dx-date-box
-                    id="tx-from-date"
-                    type="date"
-                    [(value)]="vm.txFromDate"
-                    (onValueChanged)="vm.reloadTransactions()">
-                  </dx-date-box>
-                </div>
-                <div class="tx-filter-field">
-                  <label class="form-label" for="tx-to-date">To</label>
-                  <dx-date-box
-                    id="tx-to-date"
-                    type="date"
-                    [(value)]="vm.txToDate"
-                    (onValueChanged)="vm.reloadTransactions()">
-                  </dx-date-box>
-                </div>
+                <mat-form-field appearance="outline" class="tx-date-field">
+                  <mat-label>From</mat-label>
+                  <input id="tx-from-date" matInput [matDatepicker]="fromPicker" [(ngModel)]="vm.txFromDate" (dateChange)="vm.onDateFilterChange()" />
+                  <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #fromPicker></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="tx-date-field">
+                  <mat-label>To</mat-label>
+                  <input id="tx-to-date" matInput [matDatepicker]="toPicker" [(ngModel)]="vm.txToDate" (dateChange)="vm.onDateFilterChange()" />
+                  <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #toPicker></mat-datepicker>
+                </mat-form-field>
               </div>
 
               @if (vm.transactionError) {
                 <p class="form-error" id="account-tx-error">{{ vm.transactionError }}</p>
               }
 
-              <dx-data-grid
-                id="account-transaction-grid"
-                [dataSource]="vm.transactionDataSource"
-                [remoteOperations]="{ paging: true }"
-                [showBorders]="true"
-                [columnAutoWidth]="true"
-                [wordWrapEnabled]="false">
+              @if (vm.txLoading) {
+                <div class="loading-wrap"><mat-spinner diameter="36"></mat-spinner></div>
+              } @else {
+                <table id="account-transaction-grid" mat-table [dataSource]="vm.transactions" class="tx-table">
+                  <ng-container matColumnDef="created_at">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let row">{{ row.created_at | date:'short' }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="currency">
+                    <th mat-header-cell *matHeaderCellDef>Currency</th>
+                    <td mat-cell *matCellDef="let row">{{ row.currency }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="total_cents">
+                    <th mat-header-cell *matHeaderCellDef>Total</th>
+                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.total_cents, row.currency) }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="provider_fee_cents">
+                    <th mat-header-cell *matHeaderCellDef>Provider Fee</th>
+                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.provider_fee_cents, row.currency) }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="tipper_fee_cents">
+                    <th mat-header-cell *matHeaderCellDef>Tipper Fee</th>
+                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.tipper_fee_cents, row.currency) }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="net_cents">
+                    <th mat-header-cell *matHeaderCellDef>Net</th>
+                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.net_cents, row.currency) }}</td>
+                  </ng-container>
 
-                <dxi-column dataField="created_at" caption="Date" dataType="datetime" [width]="180"></dxi-column>
-                <dxi-column dataField="currency" caption="Currency" [width]="80"></dxi-column>
-                <dxi-column dataField="total_cents" caption="Total" cellTemplate="centsTpl"></dxi-column>
-                <dxi-column dataField="provider_fee_cents" caption="Provider Fee" cellTemplate="centsTpl"></dxi-column>
-                <dxi-column dataField="tipper_fee_cents" caption="Tipper Fee" cellTemplate="centsTpl"></dxi-column>
-                <dxi-column dataField="net_cents" caption="Net" cellTemplate="centsTpl"></dxi-column>
+                  <tr mat-header-row *matHeaderRowDef="vm.txColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: vm.txColumns;"></tr>
 
-                <div *dxTemplate="let cell of 'centsTpl'">
-                  {{ vm.formatCents(cell.value, cell.data.currency) }}
-                </div>
+                  <tr class="mat-row no-data-row" *matNoDataRow>
+                    <td class="mat-cell" [attr.colspan]="vm.txColumns.length">No transactions found.</td>
+                  </tr>
+                </table>
 
-                <dxo-paging [pageSize]="vm.transactionPageSize"></dxo-paging>
-                <dxo-pager [showPageSizeSelector]="false" [showInfo]="true"></dxo-pager>
-              </dx-data-grid>
+                <mat-paginator
+                  id="account-tx-paginator"
+                  [length]="vm.txTotalCount"
+                  [pageSize]="vm.txPageSize"
+                  [pageIndex]="vm.txPageIndex"
+                  [pageSizeOptions]="[10, 20, 50]"
+                  showFirstLastButtons
+                  (page)="onPageChange($event)">
+                </mat-paginator>
+              }
             </div>
-          </dxi-item>
+          </mat-tab>
 
-        </dx-tab-panel>
+        </mat-tab-group>
       }
     </div>
   }

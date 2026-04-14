@@ -42,6 +42,11 @@ text-align: center;
 --mdc-outlined-text-field-focus-outline-color: #7b9fd4;
 --mdc-outlined-text-field-focus-label-text-color: #7b9fd4;
 --mdc-outlined-text-field-caret-color: #7b9fd4;
+
+input, textarea {
+	color: #fff !important;
+	-webkit-text-fill-color: #fff !important;
+}
 }
 
 .full-width {
@@ -80,6 +85,13 @@ border-color: rgba(255, 255, 255, 0.4);
 --mat-tab-header-active-indicator-color: #7b9fd4;
 background: #252540;
 border-radius: 12px;
+
+.mat-mdc-tab .mdc-tab__text-label {
+	color: rgba(255, 255, 255, 0.55);
+}
+.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+	color: #fff;
+}
 }
 
 // ---- OAuth Buttons ----

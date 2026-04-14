@@ -23,8 +23,8 @@ export class HomeViewModel {
 	];
 
 	pricing: PricingRow[] = [
-		{ item: 'Monthly subscription', details: '$9.99/mo' },
-		{ item: 'Transaction fees', details: 'All standard Stripe processing fees apply' },
+		{ item: 'Monthly subscription', details: 'Free' },
+		{ item: 'Transaction fees', details: '10% per transaction + standard Stripe fees' },
 		{ item: 'iOS & Android', details: 'Both platforms included' },
 		{ item: 'Setup fees', details: 'None' },
 		{ item: 'Hardware required', details: 'None — just your smartphone' },

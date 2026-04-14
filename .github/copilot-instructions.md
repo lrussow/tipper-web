@@ -122,7 +122,7 @@ export class HomeComponent implements OnInit {
 - **IDs on all interactive elements**: Required for Selenium testing (kebab-case, e.g. `contact-submit`, `nav-home`)
 - **No `any` type** — use explicit types or `unknown`
 - **`const` over `let`** when never reassigned
-- **Colors / palette**: Primary `#6c63ff`, dark background `#1a1a2e`
+- **Colors / palette**: Primary `#4e5e8b`, dark background `#1a1a2e`
 
 ---
 
@@ -170,3 +170,49 @@ npm start    # proxies /api → localhost:8000
 - Every component and service must have a `.spec.ts` file
 - Selenium UI tests: use `By.Id()` only — never XPath or CSS selectors
 - Every testable HTML element needs a unique `id` attribute
+
+---
+
+## Tooling: Image / Asset Conversion
+
+When runtimes (Python, Node.js) are not available locally, use **Docker** for asset processing tasks.
+
+### SVG → favicon.ico
+
+To regenerate `frontend/public/favicon.ico` from `frontend/public/logo.svg` (logo rendered at 80% scale with transparent padding, multi-size ICO):
+
+```bash
+docker run --rm -v "${PWD}/frontend/public:/work" python:3.11-slim bash -c "
+apt-get update -qq && apt-get install -y -qq libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libffi-dev shared-mime-info &&
+pip install cairosvg Pillow --quiet &&
+python3 - <<'EOF'
+import cairosvg, io
+from PIL import Image
+
+inner = int(256 * 0.9)
+with open('/work/logo.svg', 'r') as f:
+    svg = f.read()
+
+# Swap light/dark blues so circles are dark and T is light
+svg = svg.replace('#5ac4f6', '__CIRCLE_MAIN__')
+svg = svg.replace('#0042a9', '__T_MAIN__')
+svg = svg.replace('#93e3fd', '__CIRCLE_OVERLAY__')
+svg = svg.replace('#1a0a52', '__T_SHADOW__')
+svg = svg.replace('__CIRCLE_MAIN__',    '#0042a9')   # left circle -> dark blue
+svg = svg.replace('__T_MAIN__',         '#5ac4f6')   # T -> light blue
+svg = svg.replace('__CIRCLE_OVERLAY__', '#5ac4f6')   # right circle -> light blue
+svg = svg.replace('__T_SHADOW__',       '#93e3fd')   # T shadow -> lightest blue
+
+# Make right circle fully opaque so outer region is solid light blue not washed-out
+svg = svg.replace('fill:#5ac4f6;fill-opacity:0.5', 'fill:#5ac4f6;fill-opacity:1')
+
+png_bytes = cairosvg.svg2png(bytestring=svg.encode(), output_width=inner, output_height=inner)
+inner_img = Image.open(io.BytesIO(png_bytes)).convert('RGBA')
+canvas = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+offset = (256 - inner) // 2
+canvas.paste(inner_img, (offset, offset), inner_img)
+canvas.save('/work/favicon.ico', format='ICO', sizes=[(16,16),(32,32),(48,48),(256,256)])
+print('Done')
+EOF
+"
+```

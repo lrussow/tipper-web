@@ -1,6 +1,6 @@
 /* ── Variables ── */
-$primary: #6c63ff;
-$primary-dark: #574fd6;
+$primary: #4e5e8b;
+$primary-dark: #3d4c78;
 $dark: #1a1a2e;
 $text: #333;
 $text-muted: #666;
@@ -92,25 +92,20 @@ $border: #e0e0e0;
 
 		.phone-mockup {
 			position: relative;
-			width: 160px;
-			height: 240px;
-			background: rgba(255, 255, 255, 0.08);
-			border: 2px solid rgba(255, 255, 255, 0.2);
-			border-radius: 24px;
+			width: 240px;
+			height: auto;
+			background: transparent;
+			border: none;
+			border-radius: 0;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 
-			.phone-icon {
-				font-size: 5rem;
-			}
-
-			.tap-icon {
-				position: absolute;
-				bottom: -20px;
-				right: -20px;
-				font-size: 3rem;
-				animation: pulse 2s infinite;
+			img {
+				width: 100%;
+				height: auto;
+				border-radius: 24px;
+				box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
 			}
 		}
 	}
@@ -165,7 +160,6 @@ $border: #e0e0e0;
 	h2 {
 		font-size: 2rem;
 		margin-bottom: 2.5rem;
-		color: $dark;
 	}
 
 	.steps {
@@ -227,7 +221,6 @@ $border: #e0e0e0;
 	h2 {
 		font-size: 2rem;
 		text-align: center;
-		color: $dark;
 		margin-bottom: 2.5rem;
 	}
 
@@ -281,7 +274,6 @@ $border: #e0e0e0;
 	h2 {
 		font-size: 2rem;
 		text-align: center;
-		color: $dark;
 		margin-bottom: 2.5rem;
 	}
 
@@ -297,7 +289,7 @@ $border: #e0e0e0;
 		font-size: 0.95rem;
 
 		th {
-			background: $dark;
+			background: $primary;
 			color: #fff;
 			padding: 0.9rem 1.25rem;
 			text-align: left;
@@ -327,7 +319,6 @@ $border: #e0e0e0;
 	h2 {
 		font-size: 2rem;
 		text-align: center;
-		color: $dark;
 		margin-bottom: 2.5rem;
 	}
 
@@ -395,6 +386,7 @@ $border: #e0e0e0;
 		font-size: 2rem;
 		text-align: center;
 		margin-bottom: 2.5rem;
+		color: #fff;
 	}
 
 	.security-grid {
@@ -435,7 +427,6 @@ $border: #e0e0e0;
 	h2 {
 		font-size: 2rem;
 		text-align: center;
-		color: $dark;
 		margin-bottom: 2.5rem;
 	}
 

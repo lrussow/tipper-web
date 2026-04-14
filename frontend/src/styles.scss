@@ -33,3 +33,11 @@ a {
 		text-decoration: underline;
 	}
 }
+
+// Account page tab label color overrides (must be global to pierce Material encapsulation)
+app-account .mat-mdc-tab .mdc-tab__text-label {
+	color: rgba(255, 255, 255, 0.55) !important;
+}
+app-account .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+	color: #fff !important;
+}

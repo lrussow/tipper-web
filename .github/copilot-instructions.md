@@ -172,6 +172,8 @@ export class HomeComponent implements OnInit {
 - Never commit `.env` with real credentials — use `.env.example`
 - **Account provisioning:** `GET /account/me` is **read-only** — it looks up `emails` and `customers` by the JWT email claim using `user_client` (so RLS applies). Never INSERT from this endpoint.
 - **CORS + exceptions:** All unhandled exceptions must return a `JSONResponse` via `@app.exception_handler(Exception)` so CORS headers are always present. Never let raw Python exceptions bypass middleware.
+- **Supabase client choice:** Always use `user_client` (the user's authenticated JWT client, from `Depends(get_user_client)`) for queries on RLS-protected tables (`customers`, `stripe_accounts`, etc.). Do **not** use `supabase_admin` for these — even though the service role bypasses RLS in theory, PostgREST embedded-resource joins (e.g. `stripe_accounts!stripe_account_id(...)`) silently return `null` for the joined resource when using the admin client. Reserve `supabase_admin` for operations that genuinely require elevated access (writes to `emails`, Supabase Auth admin calls, RPC decryption).
+- **PostgREST join hint syntax:** Use the FK column name, not the constraint name: `stripe_accounts!stripe_account_id(...)` ✅ — not `stripe_accounts!customers_stripe_account_id_fkey(...)` ❌. The constraint-name form silently fails in practice.
 
 ---
 

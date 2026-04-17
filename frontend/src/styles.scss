@@ -1,6 +1,8 @@
 /* ── Variables ── */
 $primary: #4e5e8b;
 $primary-dark: #3d4c78;
+$accent: #5ac4f6;
+$accent-dim: rgba(90, 196, 246, 0.7);
 $dark: #1a1a2e;
 $text: #333;
 $text-muted: #666;
@@ -178,7 +180,7 @@ main {
 
 			&:hover,
 			&.active {
-				color: #5ac4f6;
+				color: $accent;
 			}
 		}
 	}
@@ -221,8 +223,8 @@ main {
 
 .nav-signout-btn {
 	background: none;
-	border: 1px solid rgba(255, 255, 255, 0.25);
-	color: rgba(255, 255, 255, 0.75);
+	border: 1px solid $accent;
+	color: $accent;
 	border-radius: 6px;
 	padding: 6px 14px;
 	font-size: 0.875rem;
@@ -230,7 +232,7 @@ main {
 	transition: background 0.15s;
 
 	&:hover {
-		background: rgba(255, 255, 255, 0.08);
+		background: rgba(90, 196, 246, 0.12);
 	}
 }
 
@@ -1013,16 +1015,19 @@ app-account .mat-mdc-tab .mdc-tab__text-label {
 app-account .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
 	color: #fff !important;
 }
+app-account .mdc-tab-indicator__content--underline {
+	border-color: $accent !important;
+}
 
 /* Material form-field overrides scoped to account page */
 app-account .mat-mdc-form-field {
 	--mdc-outlined-text-field-label-text-color: rgba(255, 255, 255, 0.6);
 	--mdc-outlined-text-field-input-text-color: #fff;
 	--mdc-outlined-text-field-outline-color: #4e5e8b;
-	--mdc-outlined-text-field-hover-outline-color: #5a6ea0;
-	--mdc-outlined-text-field-focus-outline-color: #7b9fd4;
-	--mdc-outlined-text-field-focus-label-text-color: #7b9fd4;
-	--mdc-outlined-text-field-caret-color: #7b9fd4;
+	--mdc-outlined-text-field-hover-outline-color: #{$accent-dim};
+	--mdc-outlined-text-field-focus-outline-color: #{$accent};
+	--mdc-outlined-text-field-focus-label-text-color: #{$accent};
+	--mdc-outlined-text-field-caret-color: #{$accent};
 	--mdc-outlined-text-field-container-color: transparent;
 
 	input, textarea {
@@ -1061,7 +1066,7 @@ app-account button[mat-stroked-button] {
 app-account .mat-mdc-tab-group {
 	--mat-tab-header-active-label-text-color: #fff;
 	--mat-tab-header-inactive-label-text-color: rgba(255, 255, 255, 0.55);
-	--mat-tab-header-active-indicator-color: #7b9fd4;
+	--mat-tab-header-active-indicator-color: #{$accent};
 	background: #252540;
 	border-radius: 12px;
 
@@ -1240,7 +1245,7 @@ app-account .mat-mdc-tab-group {
 .link-btn {
 	background: none;
 	border: none;
-	color: #7b9fd4;
+	color: $accent;
 	font-size: 0.875rem;
 	cursor: pointer;
 	padding: 0;

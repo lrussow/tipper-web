@@ -83,10 +83,6 @@
   <!-- ============================================================ -->
   @else {
     <div class="account-dashboard">
-      <div class="dashboard-header">
-        <h1 class="dashboard-title">My Account</h1>
-        <button id="account-signout-btn" mat-stroked-button (click)="vm.signOut()">Sign Out</button>
-      </div>
 
       @if (vm.profileLoading) {
         <div class="loading-wrap">

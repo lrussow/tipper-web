@@ -30,6 +30,11 @@ export class LoggingService {
 
 	private tag: string = 'App';
 	private debugModeEnabled = false;
+	private root: LoggingService | null = null;
+
+	private get effectiveMinLevel(): LogLevel {
+		return this.root ? this.root.minLevel : this.minLevel;
+	}
 
 	private readonly appMeta: Record<string, string> = {
 		platform: 'web',
@@ -48,7 +53,7 @@ export class LoggingService {
 	withTag(tag: string): LoggingService {
 		const child = new LoggingService(this.http, this.auth);
 		child.tag = tag;
-		child.minLevel = this.minLevel;
+		child.root = this;
 		return child;
 	}
 
@@ -95,7 +100,7 @@ export class LoggingService {
 	}
 
 	private log(level: LogLevel, message: string, error?: unknown): void {
-		if (level < this.minLevel) return;
+		if (level < this.effectiveMinLevel) return;
 
 		const sanitized = this.sanitize(message);
 		const label = `[${LogLevel[level]}] [${this.tag}]`;

@@ -367,15 +367,14 @@ this.txCursorStack = [];
 this.loadTransactions(null, this.txPageSize);
 }
 
-// Tab indices: 0=Change Password, 1=Address, 2=Contact, 3=Stripe, 4=Transactions
+// Tab indices: 0=Profile, 1=Transactions, 2=Stripe, 3=Change Password
 async onTabChange(index: number): Promise<void> {
 this.selectedTabIndex = index;
 switch (index) {
-	case 1:
-	case 2:
+	case 0:
 		await this.loadProfile();
 		break;
-	case 4:
+	case 1:
 		this.txCursorStack = [];
 		await this.loadTransactions(null, this.txPageSize);
 		break;

@@ -95,32 +95,37 @@
       } @else {
         <mat-tab-group id="account-tab-panel" animationDuration="200ms" [selectedIndex]="vm.selectedTabIndex" (selectedTabChange)="onTabChange($event.index)">
 
-          <!-- ---- Change Password Tab ---- -->
-          <mat-tab label="Change Password">
+          <!-- ---- Profile Tab (Contact + Address) ---- -->
+          <mat-tab label="Profile">
             <div class="tab-content">
-              @if (vm.passwordError) {
-                <p class="form-error" id="account-change-password-error">{{ vm.passwordError }}</p>
+              <p class="section-heading">Contact Info</p>
+              @if (vm.contactError) {
+                <p class="form-error" id="account-contact-error">{{ vm.contactError }}</p>
               }
-              @if (vm.passwordSuccess) {
-                <p class="form-success" id="account-change-password-success">{{ vm.passwordSuccess }}</p>
+              @if (vm.contactSuccess) {
+                <p class="form-success" id="account-contact-success">{{ vm.contactSuccess }}</p>
               }
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>New Password</mat-label>
-                <input id="profile-new-password" matInput type="password" placeholder="New password" [(ngModel)]="vm.newPassword" />
+                <mat-label>First Name</mat-label>
+                <input id="contact-first-name" matInput placeholder="First name" [(ngModel)]="vm.contactForm.first_name" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Confirm Password</mat-label>
-                <input id="profile-confirm-password" matInput type="password" placeholder="Confirm new password" [(ngModel)]="vm.confirmPassword" />
+                <mat-label>Last Name</mat-label>
+                <input id="contact-last-name" matInput placeholder="Last name" [(ngModel)]="vm.contactForm.last_name" />
               </mat-form-field>
-              <button id="account-change-password-btn" mat-raised-button color="primary" [disabled]="vm.passwordLoading" (click)="vm.changePassword()">
-                @if (vm.passwordLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Change Password }
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Phone</mat-label>
+                <input id="contact-phone" matInput type="tel" placeholder="+1 555 000 0000" [(ngModel)]="vm.contactForm.phone" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Email</mat-label>
+                <input id="contact-email" matInput type="email" [(ngModel)]="vm.contactForm.email" />
+              </mat-form-field>
+              <button id="account-save-contact-btn" mat-raised-button color="primary" [disabled]="vm.contactLoading" (click)="vm.saveContact()">
+                @if (vm.contactLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Contact Info }
               </button>
-            </div>
-          </mat-tab>
 
-          <!-- ---- Address Tab ---- -->
-          <mat-tab label="Address">
-            <div class="tab-content">
+              <p class="section-heading">Address</p>
               @if (vm.addressError) {
                 <p class="form-error" id="account-address-error">{{ vm.addressError }}</p>
               }
@@ -153,72 +158,6 @@
               </mat-form-field>
               <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.addressLoading" (click)="vm.saveAddress()">
                 @if (vm.addressLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Address }
-              </button>
-            </div>
-          </mat-tab>
-
-          <!-- ---- Contact Tab ---- -->
-          <mat-tab label="Contact">
-            <div class="tab-content">
-              @if (vm.contactError) {
-                <p class="form-error" id="account-contact-error">{{ vm.contactError }}</p>
-              }
-              @if (vm.contactSuccess) {
-                <p class="form-success" id="account-contact-success">{{ vm.contactSuccess }}</p>
-              }
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>First Name</mat-label>
-                <input id="contact-first-name" matInput placeholder="First name" [(ngModel)]="vm.contactForm.first_name" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Last Name</mat-label>
-                <input id="contact-last-name" matInput placeholder="Last name" [(ngModel)]="vm.contactForm.last_name" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Phone</mat-label>
-                <input id="contact-phone" matInput type="tel" placeholder="+1 555 000 0000" [(ngModel)]="vm.contactForm.phone" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Email</mat-label>
-                <input id="contact-email" matInput type="email" [(ngModel)]="vm.contactForm.email" />
-              </mat-form-field>
-              <button id="account-save-contact-btn" mat-raised-button color="primary" [disabled]="vm.contactLoading" (click)="vm.saveContact()">
-                @if (vm.contactLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Contact Info }
-              </button>
-            </div>
-          </mat-tab>
-
-          <!-- ---- Stripe Tab ---- -->
-          <mat-tab label="Stripe">
-            <div class="tab-content">
-              @if (vm.profile) {
-                <div class="stripe-status" id="account-stripe-status">
-                  <div class="status-row">
-                    <span class="status-label">Account Connected</span>
-                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_onboarding_complete" [class.badge-warn]="!vm.profile.stripe_onboarding_complete">
-                      {{ vm.profile.stripe_onboarding_complete ? 'Connected' : 'Not Connected' }}
-                    </span>
-                  </div>
-                  <div class="status-row">
-                    <span class="status-label">Charges Enabled</span>
-                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_charges_enabled" [class.badge-warn]="!vm.profile.stripe_charges_enabled">
-                      {{ vm.profile.stripe_charges_enabled ? 'Yes' : 'No' }}
-                    </span>
-                  </div>
-                  <div class="status-row">
-                    <span class="status-label">Payouts Enabled</span>
-                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_payouts_enabled" [class.badge-warn]="!vm.profile.stripe_payouts_enabled">
-                      {{ vm.profile.stripe_payouts_enabled ? 'Yes' : 'No' }}
-                    </span>
-                  </div>
-                </div>
-              }
-              @if (vm.stripeError) {
-                <p class="form-error" id="account-stripe-error">{{ vm.stripeError }}</p>
-              }
-              <p class="stripe-hint">Update your Stripe profile, banking, or identity information on the Stripe-hosted page.</p>
-              <button id="account-stripe-btn" mat-raised-button color="primary" [disabled]="vm.stripeLoading" (click)="vm.openStripeOnboarding()">
-                @if (vm.stripeLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Update Stripe Info }
               </button>
             </div>
           </mat-tab>
@@ -288,6 +227,64 @@
                   <button id="account-tx-next" class="tx-page-btn" [disabled]="!vm.txHasMore || vm.txLoading" (click)="vm.loadNextPage()">Next →</button>
                 </div>
               }
+            </div>
+          </mat-tab>
+
+          <!-- ---- Stripe Tab ---- -->
+          <mat-tab label="Stripe">
+            <div class="tab-content">
+              @if (vm.profile) {
+                <div class="stripe-status" id="account-stripe-status">
+                  <div class="status-row">
+                    <span class="status-label">Account Connected</span>
+                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_onboarding_complete" [class.badge-warn]="!vm.profile.stripe_onboarding_complete">
+                      {{ vm.profile.stripe_onboarding_complete ? 'Connected' : 'Not Connected' }}
+                    </span>
+                  </div>
+                  <div class="status-row">
+                    <span class="status-label">Charges Enabled</span>
+                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_charges_enabled" [class.badge-warn]="!vm.profile.stripe_charges_enabled">
+                      {{ vm.profile.stripe_charges_enabled ? 'Yes' : 'No' }}
+                    </span>
+                  </div>
+                  <div class="status-row">
+                    <span class="status-label">Payouts Enabled</span>
+                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_payouts_enabled" [class.badge-warn]="!vm.profile.stripe_payouts_enabled">
+                      {{ vm.profile.stripe_payouts_enabled ? 'Yes' : 'No' }}
+                    </span>
+                  </div>
+                </div>
+              }
+              @if (vm.stripeError) {
+                <p class="form-error" id="account-stripe-error">{{ vm.stripeError }}</p>
+              }
+              <p class="stripe-hint">Update your Stripe profile, banking, or identity information on the Stripe-hosted page.</p>
+              <button id="account-stripe-btn" mat-raised-button color="primary" [disabled]="vm.stripeLoading" (click)="vm.openStripeOnboarding()">
+                @if (vm.stripeLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Update Stripe Info }
+              </button>
+            </div>
+          </mat-tab>
+
+          <!-- ---- Change Password Tab ---- -->
+          <mat-tab label="Change Password">
+            <div class="tab-content">
+              @if (vm.passwordError) {
+                <p class="form-error" id="account-change-password-error">{{ vm.passwordError }}</p>
+              }
+              @if (vm.passwordSuccess) {
+                <p class="form-success" id="account-change-password-success">{{ vm.passwordSuccess }}</p>
+              }
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>New Password</mat-label>
+                <input id="profile-new-password" matInput type="password" placeholder="New password" [(ngModel)]="vm.newPassword" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Confirm Password</mat-label>
+                <input id="profile-confirm-password" matInput type="password" placeholder="Confirm new password" [(ngModel)]="vm.confirmPassword" />
+              </mat-form-field>
+              <button id="account-change-password-btn" mat-raised-button color="primary" [disabled]="vm.passwordLoading" (click)="vm.changePassword()">
+                @if (vm.passwordLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Change Password }
+              </button>
             </div>
           </mat-tab>
 

@@ -45,7 +45,7 @@
         <div class="email-signin">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
-            <input id="account-email" matInput type="email" placeholder="you@example.com" [(ngModel)]="vm.loginEmail" />
+            <input id="account-email" matInput type="email" [(ngModel)]="vm.loginEmail" />
           </mat-form-field>
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Password</mat-label>
@@ -65,7 +65,7 @@
         <div class="email-signin">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
-            <input id="account-forgot-email" matInput type="email" placeholder="you@example.com" [(ngModel)]="vm.loginEmail" />
+            <input id="account-forgot-email" matInput type="email" [(ngModel)]="vm.loginEmail" />
           </mat-form-field>
           <button id="account-reset-btn" mat-raised-button color="primary" [disabled]="vm.authLoading" (click)="vm.sendForgotPassword()">
             @if (vm.authLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Send Reset Email }
@@ -180,7 +180,7 @@
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Email</mat-label>
-                <input id="contact-email" matInput type="email" placeholder="you@example.com" [(ngModel)]="vm.contactForm.email" />
+                <input id="contact-email" matInput type="email" [(ngModel)]="vm.contactForm.email" />
               </mat-form-field>
               <button id="account-save-contact-btn" mat-raised-button color="primary" [disabled]="vm.contactLoading" (click)="vm.saveContact()">
                 @if (vm.contactLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Contact Info }

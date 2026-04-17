@@ -1025,19 +1025,31 @@ app-account .mdc-tab-indicator__content--underline {
 
 /* Material form-field overrides scoped to account page */
 app-account .mat-mdc-form-field {
-	--mdc-outlined-text-field-label-text-color: rgba(255, 255, 255, 0.6);
-	--mdc-outlined-text-field-input-text-color: #fff;
+	--mdc-outlined-text-field-label-text-color: #{$accent};
+	--mdc-outlined-text-field-input-text-color: #{$accent};
 	--mdc-outlined-text-field-outline-color: #4e5e8b;
 	--mdc-outlined-text-field-hover-outline-color: #{$accent-dim};
-	--mdc-outlined-text-field-focus-outline-color: #{$accent};
-	--mdc-outlined-text-field-focus-label-text-color: #{$accent};
-	--mdc-outlined-text-field-caret-color: #{$accent};
+	--mdc-outlined-text-field-focus-outline-color: #fff;
+	--mdc-outlined-text-field-focus-label-text-color: #fff;
+	--mdc-outlined-text-field-caret-color: #fff;
 	--mdc-outlined-text-field-container-color: transparent;
 
 	input, textarea {
+		color: $accent !important;
+		-webkit-text-fill-color: $accent !important;
+		background-color: transparent !important;
+	}
+
+	&:hover input,
+	&:hover textarea {
 		color: #fff !important;
 		-webkit-text-fill-color: #fff !important;
-		background-color: transparent !important;
+	}
+
+	&:focus-within input,
+	&:focus-within textarea {
+		color: #fff !important;
+		-webkit-text-fill-color: #fff !important;
 	}
 
 	input:-webkit-autofill,

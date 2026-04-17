@@ -93,7 +93,7 @@
           <mat-spinner id="account-loading" diameter="48"></mat-spinner>
         </div>
       } @else {
-        <mat-tab-group id="account-tab-panel" animationDuration="200ms">
+        <mat-tab-group id="account-tab-panel" animationDuration="200ms" (selectedTabChange)="onTabChange($event.index)">
 
           <!-- ---- Change Password Tab ---- -->
           <mat-tab label="Change Password">
@@ -239,6 +239,7 @@
                   <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
                   <mat-datepicker #toPicker></mat-datepicker>
                 </mat-form-field>
+                <button id="account-tx-refresh" class="tx-refresh-btn" [disabled]="vm.txLoading" (click)="vm.refreshTransactions()">↻ Refresh</button>
               </div>
 
               @if (vm.transactionError) {

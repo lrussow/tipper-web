@@ -221,7 +221,6 @@ last_name: profile.last_name ?? '',
 phone: profile.phone ?? '',
 email: profile.email ?? '',
 };
-await this.loadTransactions(null, this.txPageSize);
 } catch {
 // profile load failure is non-fatal
 } finally {
@@ -338,6 +337,25 @@ this.loadTransactions(cursor, this.txPageSize);
 onDateFilterChange(): void {
 this.txCursorStack = [];
 this.loadTransactions(null, this.txPageSize);
+}
+
+refreshTransactions(): void {
+this.txCursorStack = [];
+this.loadTransactions(null, this.txPageSize);
+}
+
+// Tab indices: 0=Change Password, 1=Address, 2=Contact, 3=Stripe, 4=Transactions
+async onTabChange(index: number): Promise<void> {
+switch (index) {
+	case 1:
+	case 2:
+		await this.loadProfile();
+		break;
+	case 4:
+		this.txCursorStack = [];
+		await this.loadTransactions(null, this.txPageSize);
+		break;
+}
 }
 
 formatCents(cents: number, currency: string): string {

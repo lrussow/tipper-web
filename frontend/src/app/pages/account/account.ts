@@ -46,4 +46,8 @@ this.vm = new AccountViewModel(auth, http);
 async ngOnInit(): Promise<void> {
 await this.vm.init();
 }
+
+async onTabChange(index: number): Promise<void> {
+await this.vm.onTabChange(index);
+}
 }

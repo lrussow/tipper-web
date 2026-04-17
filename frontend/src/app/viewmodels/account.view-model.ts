@@ -141,7 +141,11 @@ this.authError = '';
 this.authLoading = true;
 try {
 const err = await this.auth.signInWithPassword(this.loginEmail, this.loginPassword);
-if (err) this.authError = err;
+if (err) {
+this.authError = err;
+} else {
+this.logger.checkDevMode(this.loginEmail);
+}
 } finally {
 this.authLoading = false;
 }

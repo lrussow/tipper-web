@@ -95,6 +95,7 @@ export class AuthService {
 		try {
 			await firstValueFrom(
 				this.http.post(`${environment.tipperApiBase}/auth/logout`, {}, {
+					withCredentials: true,
 					headers: this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {},
 				})
 			);

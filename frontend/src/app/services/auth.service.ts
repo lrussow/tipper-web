@@ -71,7 +71,7 @@ export class AuthService {
 	async signInWithPassword(email: string, password: string): Promise<string | null> {
 		try {
 			const data = await firstValueFrom(
-				this.http.post<AuthTokenResponse>(`${environment.tipperApiBase}/auth/login`, { email, password })
+				this.http.post<AuthTokenResponse>(`${environment.tipperApiBase}/auth/login`, { email, password }, { withCredentials: true })
 			);
 			this.applyTokenResponse(data);
 			this.broadcastSession();

@@ -205,12 +205,14 @@ this.http.get<{ customer_id: string }>(`${environment.tipperApiBase}/account/me`
 headers: this.authHeaders(),
 })
 );
+this.logger.d('loadProfile: /account/me response', JSON.stringify(me));
 const profile = await firstValueFrom(
 this.http.get<CustomerProfile>(
 `${environment.tipperApiBase}/account/profile?customer_id=${me.customer_id}`,
 { headers: this.authHeaders() }
 )
 );
+this.logger.d('loadProfile: /account/profile response', JSON.stringify(profile));
 this.profile = profile;
 if (profile.address) {
 this.addressForm = {
@@ -328,6 +330,7 @@ if (this.txToDate) url += `&to_date=${this.txToDate.toISOString().split('T')[0]}
 const resp = await firstValueFrom(
 this.http.get<TransactionPage>(url, { headers: this.authHeaders() })
 );
+this.logger.d('loadTransactions: response', `items=${resp.items.length} has_more=${resp.has_more} next_cursor=${resp.next_cursor} first=${JSON.stringify(resp.items[0] ?? null)}`);
 this.transactions = resp.items;
 this.txHasMore = resp.has_more;
 this.txNextCursor = resp.next_cursor ?? null;

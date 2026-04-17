@@ -77,7 +77,7 @@ transactions: Transaction[] = [];
 txHasMore = false;
 txNextCursor: string | null = null;
 txCursorStack: string[] = []; // stack of cursors for navigating back
-txPageSize = 20;
+txPageSize = 5;
 txFromDate: Date = (() => { const d = new Date(); d.setDate(d.getDate() - 30); return d; })();
 txToDate: Date = new Date();
 transactionError = '';

@@ -141,6 +141,8 @@ export class HomeComponent implements OnInit {
 - **No `any` type** — use explicit types or `unknown`
 - **`const` over `let`** when never reassigned
 - **Colors / palette**: Primary `#4e5e8b`, dark background `#1a1a2e`
+- **Logging**: Use `LoggingService` (`frontend/src/app/services/logging.service.ts`) — never `console.log/warn/error`. All ViewModels receive `LoggingService` via constructor and create a tagged child logger: `private log = this.logger.withTag('MyViewModel')`. The service has built-in level guards; calls below `minLevel` are no-ops with no backend posting. Debug mode auto-enables for `lrussow@gmail.com`.
+  - `LoggingService` is `@Injectable({ providedIn: 'root' })` — **do not** put `tag` in the constructor (breaks Angular DI). Use `withTag()` after construction.
 
 ---
 

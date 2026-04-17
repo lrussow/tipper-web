@@ -3,6 +3,7 @@
 ## Workflow
 
 - **Always commit and push after completing each task.** Once changes are verified, stage all modified files, write a descriptive commit message (with the `Co-authored-by: Copilot` trailer), and push to the current branch. Do not wait for the user to ask.
+- **No raw Promises or `.then()` chains.** Always use `async`/`await`. The only exception is Angular lazy-load routes which use `async () => (await import(...)).Component` — this is still `await`, not `.then()`.
 
 ---
 

@@ -42,9 +42,17 @@ text-align: center;
 --mdc-outlined-text-field-focus-outline-color: #7b9fd4;
 --mdc-outlined-text-field-focus-label-text-color: #7b9fd4;
 --mdc-outlined-text-field-caret-color: #7b9fd4;
+--mdc-outlined-text-field-container-color: transparent;
 
 input, textarea {
 	color: #fff !important;
+	-webkit-text-fill-color: #fff !important;
+	background-color: transparent !important;
+}
+
+input:-webkit-autofill,
+textarea:-webkit-autofill {
+	-webkit-box-shadow: 0 0 0 1000px #252540 inset !important;
 	-webkit-text-fill-color: #fff !important;
 }
 }
@@ -91,61 +99,6 @@ border-radius: 12px;
 }
 .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
 	color: #fff;
-}
-}
-
-// ---- OAuth Buttons ----
-
-.oauth-buttons {
-display: flex;
-flex-direction: column;
-gap: 10px;
-}
-
-.oauth-btn {
-display: flex;
-align-items: center;
-gap: 10px;
-width: 100%;
-padding: 11px 16px;
-border-radius: 8px;
-border: 1px solid rgba(255, 255, 255, 0.15);
-background: rgba(255, 255, 255, 0.05);
-color: #fff;
-font-size: 0.95rem;
-cursor: pointer;
-transition: background 0.15s;
-
-&:hover:not(:disabled) {
-background: rgba(255, 255, 255, 0.12);
-}
-
-&:disabled {
-opacity: 0.5;
-cursor: not-allowed;
-}
-}
-
-.oauth-icon {
-width: 20px;
-height: 20px;
-object-fit: contain;
-}
-
-// ---- Divider ----
-
-.divider {
-display: flex;
-align-items: center;
-gap: 12px;
-color: rgba(255, 255, 255, 0.35);
-font-size: 0.85rem;
-
-&::before,
-&::after {
-content: '';
-flex: 1;
-border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 }
 

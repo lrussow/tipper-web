@@ -14,7 +14,6 @@ import { LoggingService } from './services/logging.service';
 			<router-outlet></router-outlet>
 		</main>
 	`,
-	styleUrl: './app.scss',
 })
 export class App implements OnInit {
 	title = 'The Tipper';

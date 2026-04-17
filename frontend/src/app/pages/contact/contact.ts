@@ -9,7 +9,6 @@ selector: 'app-contact',
 standalone: true,
 imports: [FormsModule, CommonModule],
 templateUrl: './contact.html',
-styleUrl: './contact.scss',
 })
 export class Contact implements OnInit {
 vm: ContactViewModel;

@@ -32,7 +32,7 @@ MatProgressSpinnerModule,
 MatIconModule,
 ],
 templateUrl: './account.html',
-styleUrl: './account.scss',
+
 })
 export class Account implements OnInit {
 vm: AccountViewModel;

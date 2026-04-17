@@ -7,7 +7,6 @@ selector: 'app-home',
 standalone: true,
 imports: [RouterLink],
 templateUrl: './home.html',
-styleUrl: './home.scss',
 })
 export class Home implements OnInit {
 vm: HomeViewModel;

@@ -60,6 +60,11 @@ contactError = '';
 contactSuccess = '';
 contactLoading = false;
 
+// Unified profile save
+profileSaveLoading = false;
+profileSaveError = '';
+profileSaveSuccess = '';
+
 // Stripe tab
 stripeLoading = false;
 stripeError = '';
@@ -294,6 +299,21 @@ this.logger.e('saveContact failed', e);
 } finally {
 this.contactLoading = false;
 }
+}
+
+async saveProfile(): Promise<void> {
+	this.profileSaveError = '';
+	this.profileSaveSuccess = '';
+	this.profileSaveLoading = true;
+	try {
+		await Promise.all([this.saveContact(), this.saveAddress()]);
+		if (!this.contactError && !this.addressError)
+			this.profileSaveSuccess = 'Profile saved successfully.';
+		else
+			this.profileSaveError = [this.contactError, this.addressError].filter(Boolean).join(' ');
+	} finally {
+		this.profileSaveLoading = false;
+	}
 }
 
 // ---- Stripe ----

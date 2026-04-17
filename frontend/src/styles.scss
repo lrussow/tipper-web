@@ -1065,6 +1065,11 @@ app-account .mat-mdc-form-field {
 		border-color: $accent !important;
 	}
 
+	/* Floating label text */
+	.mdc-floating-label {
+		color: $accent !important;
+	}
+
 	&:hover {
 		.mdc-notched-outline__leading,
 		.mdc-notched-outline__notch,
@@ -1078,6 +1083,10 @@ app-account .mat-mdc-form-field {
 		.mdc-notched-outline__notch,
 		.mdc-notched-outline__trailing {
 			border-color: #fff !important;
+		}
+
+		.mdc-floating-label {
+			color: #fff !important;
 		}
 	}
 }

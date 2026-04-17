@@ -95,12 +95,6 @@
           <mat-tab label="Profile">
             <div class="tab-content">
               <p class="section-heading">Contact Info</p>
-              @if (vm.contactError) {
-                <p class="form-error" id="account-contact-error">{{ vm.contactError }}</p>
-              }
-              @if (vm.contactSuccess) {
-                <p class="form-success" id="account-contact-success">{{ vm.contactSuccess }}</p>
-              }
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>First Name</mat-label>
                 <input id="contact-first-name" matInput placeholder="First name" [(ngModel)]="vm.contactForm.first_name" />
@@ -117,17 +111,8 @@
                 <mat-label>Email</mat-label>
                 <input id="contact-email" matInput type="email" [(ngModel)]="vm.contactForm.email" />
               </mat-form-field>
-              <button id="account-save-contact-btn" mat-raised-button color="primary" [disabled]="vm.contactLoading" (click)="vm.saveContact()">
-                @if (vm.contactLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Contact Info }
-              </button>
 
               <p class="section-heading">Address</p>
-              @if (vm.addressError) {
-                <p class="form-error" id="account-address-error">{{ vm.addressError }}</p>
-              }
-              @if (vm.addressSuccess) {
-                <p class="form-success" id="account-address-success">{{ vm.addressSuccess }}</p>
-              }
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Address Line 1</mat-label>
                 <input id="address-line1" matInput placeholder="123 Main St" [(ngModel)]="vm.addressForm.line1" />
@@ -152,9 +137,15 @@
                 <mat-label>Province / State Code</mat-label>
                 <input id="address-state" matInput placeholder="e.g. ON or NY" [(ngModel)]="vm.addressForm.subdivision_code" />
               </mat-form-field>
-              <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.addressLoading" (click)="vm.saveAddress()">
-                @if (vm.addressLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Address }
+              <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.profileSaveLoading" (click)="vm.saveProfile()">
+                @if (vm.profileSaveLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Profile }
               </button>
+              @if (vm.profileSaveError) {
+                <p class="form-error" id="account-profile-save-error">{{ vm.profileSaveError }}</p>
+              }
+              @if (vm.profileSaveSuccess) {
+                <p class="form-success" id="account-profile-save-success">{{ vm.profileSaveSuccess }}</p>
+              }
             </div>
           </mat-tab>
 

@@ -3,6 +3,7 @@
 ## Workflow
 
 - **Always commit and push after completing each task.** Once changes are verified, stage all modified files, write a descriptive commit message (with the `Co-authored-by: Copilot` trailer), and push to the current branch. Do not wait for the user to ask.
+- **Review and update these instructions after every task completion.** If any new conventions, architecture decisions, or repo facts were established during the task, add them here before marking the task complete.
 - **No raw Promises or `.then()` chains.** Always use `async`/`await`. The only exception is Angular lazy-load routes which use `async () => (await import(...)).Component` — this is still `await`, not `.then()`.
 
 ---
@@ -47,7 +48,14 @@ tipper-web/             ← THIS REPO (frontend only)
 thetipper-backend/      ← SEPARATE REPO at C:\src\thetipper-backend
 └── app/
     └── main.py            ← FastAPI app (all API routes live here)
+
+Tipper/                 ← SEPARATE REPO at C:\src\Tipper (mobile app — Kotlin Multiplatform)
+└── shared/src/
+    ├── commonMain/        ← shared interfaces (IAuthService, etc.)
+    └── iosMain/           ← iOS implementations (IosAuthService, etc.)
 ```
+
+> **Mobile auth note:** The mobile app (`C:\src\Tipper`) uses the **Supabase Kotlin SDK directly** for all auth — it calls Supabase, not the FastAPI backend, for sign-in/sign-out/token refresh. Changes to the backend's `/auth/refresh` cookie flow, `withCredentials`, or HttpOnly cookies have **no effect on the mobile app**.
 
 ---
 

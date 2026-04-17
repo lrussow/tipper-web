@@ -1027,8 +1027,8 @@ app-account .mdc-tab-indicator__content--underline {
 app-account .mat-mdc-form-field {
 	--mdc-outlined-text-field-label-text-color: #{$accent};
 	--mdc-outlined-text-field-input-text-color: #{$accent};
-	--mdc-outlined-text-field-outline-color: #4e5e8b;
-	--mdc-outlined-text-field-hover-outline-color: #{$accent-dim};
+	--mdc-outlined-text-field-outline-color: #{$accent};
+	--mdc-outlined-text-field-hover-outline-color: #{$accent};
 	--mdc-outlined-text-field-focus-outline-color: #fff;
 	--mdc-outlined-text-field-focus-label-text-color: #fff;
 	--mdc-outlined-text-field-caret-color: #fff;

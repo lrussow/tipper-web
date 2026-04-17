@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService, AuthSession } from '../services/auth.service';
+import { LoggingService } from '../services/logging.service';
 import { CustomerProfile } from '../models/customer-profile.model';
 import { AddressForm } from '../models/address-form.model';
 import { AccountContactForm } from '../models/account-contact-form.model';
@@ -77,7 +78,10 @@ readonly txColumns = TX_COLUMNS;
 constructor(
 private auth: AuthService,
 private http: HttpClient,
-) {}
+private logger: LoggingService,
+) {
+this.logger = logger.withTag('AccountViewModel');
+}
 
 async init(): Promise<void> {
 this.session = this.auth.getSession();
@@ -221,8 +225,8 @@ last_name: profile.last_name ?? '',
 phone: profile.phone ?? '',
 email: profile.email ?? '',
 };
-} catch {
-// profile load failure is non-fatal
+} catch (e: unknown) {
+this.logger.e('loadProfile failed', e);
 } finally {
 this.profileLoading = false;
 }
@@ -247,6 +251,7 @@ this.addressSuccess = 'Address saved successfully.';
 await this.loadProfile();
 } catch (e: unknown) {
 this.addressError = this.extractError(e, 'Failed to save address.');
+this.logger.e('saveAddress failed', e);
 } finally {
 this.addressLoading = false;
 }
@@ -271,6 +276,7 @@ this.contactSuccess = 'Contact info saved successfully.';
 await this.loadProfile();
 } catch (e: unknown) {
 this.contactError = this.extractError(e, 'Failed to save contact info.');
+this.logger.e('saveContact failed', e);
 } finally {
 this.contactLoading = false;
 }
@@ -292,6 +298,7 @@ this.http.get<{ url: string }>(
 window.open(resp.url, '_blank');
 } catch (e: unknown) {
 this.stripeError = this.extractError(e, 'Could not load Stripe link. Please try again.');
+this.logger.e('openStripeOnboarding failed', e);
 } finally {
 this.stripeLoading = false;
 }
@@ -317,6 +324,7 @@ this.txHasMore = resp.has_more;
 this.txNextCursor = resp.next_cursor ?? null;
 } catch (e: unknown) {
 this.transactionError = this.extractError(e, 'Failed to load transactions.');
+this.logger.e('loadTransactions failed', e);
 } finally {
 this.txLoading = false;
 }

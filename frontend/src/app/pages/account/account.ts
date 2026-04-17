@@ -12,6 +12,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
+import { LoggingService } from '../../services/logging.service';
 import { AccountViewModel } from '../../viewmodels/account.view-model';
 
 @Component({
@@ -39,8 +40,9 @@ vm: AccountViewModel;
 constructor(
 private auth: AuthService,
 private http: HttpClient,
+private logging: LoggingService,
 ) {
-this.vm = new AccountViewModel(auth, http);
+this.vm = new AccountViewModel(auth, http, logging);
 }
 
 async ngOnInit(): Promise<void> {

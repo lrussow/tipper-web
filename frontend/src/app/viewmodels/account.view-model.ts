@@ -64,6 +64,9 @@ contactLoading = false;
 stripeLoading = false;
 stripeError = '';
 
+// Tab state
+selectedTabIndex = 0;
+
 // Transactions tab
 transactions: Transaction[] = [];
 txHasMore = false;
@@ -366,6 +369,7 @@ this.loadTransactions(null, this.txPageSize);
 
 // Tab indices: 0=Change Password, 1=Address, 2=Contact, 3=Stripe, 4=Transactions
 async onTabChange(index: number): Promise<void> {
+this.selectedTabIndex = index;
 switch (index) {
 	case 1:
 	case 2:

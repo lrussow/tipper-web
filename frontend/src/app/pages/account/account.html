@@ -93,7 +93,7 @@
           <mat-spinner id="account-loading" diameter="48"></mat-spinner>
         </div>
       } @else {
-        <mat-tab-group id="account-tab-panel" animationDuration="200ms" (selectedTabChange)="onTabChange($event.index)">
+        <mat-tab-group id="account-tab-panel" animationDuration="200ms" [selectedIndex]="vm.selectedTabIndex" (selectedTabChange)="onTabChange($event.index)">
 
           <!-- ---- Change Password Tab ---- -->
           <mat-tab label="Change Password">

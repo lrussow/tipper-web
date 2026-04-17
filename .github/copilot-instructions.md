@@ -57,6 +57,8 @@ Tipper/                 ← SEPARATE REPO at C:\src\Tipper (mobile app — Kotli
 
 > **Mobile auth note:** The mobile app (`C:\src\Tipper`) uses the **Supabase Kotlin SDK directly** for all auth — it calls Supabase, not the FastAPI backend, for sign-in/sign-out/token refresh. Changes to the backend's `/auth/refresh` cookie flow, `withCredentials`, or HttpOnly cookies have **no effect on the mobile app**.
 
+> **Database schema:** Always consult `C:\src\Tipper\sql\` for the authoritative Supabase table definitions before writing or modifying any backend queries. Migration scripts are in `C:\src\Tipper\sql\2026_1\` — run these to understand column renames, table restructures, or FK changes that may not be reflected in the base `*.sql` files.
+
 ---
 
 ## Frontend: MVVM Pattern

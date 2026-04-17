@@ -1,5 +1,11 @@
 # Copilot Instructions — tipper-web
 
+## Workflow
+
+- **Always commit and push after completing each task.** Once changes are verified, stage all modified files, write a descriptive commit message (with the `Co-authored-by: Copilot` trailer), and push to the current branch. Do not wait for the user to ask.
+
+---
+
 ## Project Overview
 
 **tipper-web** is the marketing website for **The Tipper™ by Tip & Tap** — a contactless tipping app powered by Stripe. It spans two repositories:

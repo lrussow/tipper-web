@@ -1010,13 +1010,17 @@ main {
 
 /* Material tab label overrides (must be global to pierce encapsulation) */
 app-account .mat-mdc-tab .mdc-tab__text-label {
-	color: rgba(255, 255, 255, 0.55) !important;
+	color: #fff !important;
+	transition: color 0.2s;
+}
+app-account .mat-mdc-tab:hover .mdc-tab__text-label {
+	color: $accent !important;
 }
 app-account .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
-	color: #fff !important;
+	color: $accent !important;
 }
 app-account .mdc-tab-indicator__content--underline {
-	border-color: $accent !important;
+	border-color: transparent !important;
 }
 
 /* Material form-field overrides scoped to account page */
@@ -1064,17 +1068,17 @@ app-account button[mat-stroked-button] {
 
 /* Material tab group overrides */
 app-account .mat-mdc-tab-group {
-	--mat-tab-header-active-label-text-color: #fff;
-	--mat-tab-header-inactive-label-text-color: rgba(255, 255, 255, 0.55);
-	--mat-tab-header-active-indicator-color: #{$accent};
+	--mat-tab-header-active-label-text-color: #{$accent};
+	--mat-tab-header-inactive-label-text-color: #fff;
+	--mat-tab-header-active-indicator-color: transparent;
 	background: #252540;
 	border-radius: 12px;
 
 	.mat-mdc-tab .mdc-tab__text-label {
-		color: rgba(255, 255, 255, 0.55);
+		color: #fff;
 	}
 	.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
-		color: #fff;
+		color: $accent;
 	}
 }
 

@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 export type AccountTab = 'account' | 'change-password' | 'address' | 'contact' | 'stripe' | 'transactions';
 export type SignInMode = 'password' | 'forgot';
 
-export const TX_COLUMNS = ['created_at', 'currency', 'total_cents', 'provider_fee_cents', 'tipper_fee_cents', 'net_cents'];
+export const TX_COLUMNS = ['created_at', 'currency', 'total_cents', 'stripe_fee_cents', 'tipper_fee_cents', 'net_cents'];
 
 export class AccountViewModel {
 session: AuthSession | null = null;
@@ -64,11 +64,12 @@ stripeError = '';
 
 // Transactions tab
 transactions: Transaction[] = [];
-txTotalCount = 0;
-txPageIndex = 0;
+txHasMore = false;
+txNextCursor: string | null = null;
+txCursorStack: string[] = []; // stack of cursors for navigating back
 txPageSize = 20;
-txFromDate: Date | null = null;
-txToDate: Date | null = null;
+txFromDate: Date = (() => { const d = new Date(); d.setDate(d.getDate() - 30); return d; })();
+txToDate: Date = new Date();
 transactionError = '';
 txLoading = false;
 readonly txColumns = TX_COLUMNS;
@@ -100,7 +101,9 @@ await this.loadProfile();
 } else if (!session && wasSignedIn) {
 this.profile = null;
 this.transactions = [];
-this.txTotalCount = 0;
+this.txHasMore = false;
+this.txNextCursor = null;
+this.txCursorStack = [];
 this.isRecoveryMode = false;
 }
 });
@@ -218,7 +221,7 @@ last_name: profile.last_name ?? '',
 phone: profile.phone ?? '',
 email: profile.email ?? '',
 };
-await this.loadTransactions(0, this.txPageSize);
+await this.loadTransactions(null, this.txPageSize);
 } catch {
 // profile load failure is non-fatal
 } finally {
@@ -297,22 +300,22 @@ this.stripeLoading = false;
 
 // ---- Transactions ----
 
-async loadTransactions(pageIndex: number, pageSize: number): Promise<void> {
+async loadTransactions(cursor: string | null = null, pageSize = this.txPageSize): Promise<void> {
 if (!this.profile) return;
 this.transactionError = '';
 this.txLoading = true;
-this.txPageIndex = pageIndex;
 this.txPageSize = pageSize;
 try {
-const page = pageIndex + 1;
-let url = `${environment.tipperApiBase}/account/transactions?customer_id=${this.profile.customer_id}&page=${page}&page_size=${pageSize}`;
+let url = `${environment.tipperApiBase}/account/transactions?customer_id=${this.profile.customer_id}&limit=${pageSize}`;
+if (cursor) url += `&cursor=${encodeURIComponent(cursor)}`;
 if (this.txFromDate) url += `&from_date=${this.txFromDate.toISOString().split('T')[0]}`;
 if (this.txToDate) url += `&to_date=${this.txToDate.toISOString().split('T')[0]}`;
 const resp = await firstValueFrom(
 this.http.get<TransactionPage>(url, { headers: this.authHeaders() })
 );
 this.transactions = resp.items;
-this.txTotalCount = resp.total;
+this.txHasMore = resp.has_more;
+this.txNextCursor = resp.next_cursor ?? null;
 } catch (e: unknown) {
 this.transactionError = this.extractError(e, 'Failed to load transactions.');
 } finally {
@@ -320,12 +323,21 @@ this.txLoading = false;
 }
 }
 
-onPageChange(pageIndex: number, pageSize: number): void {
-this.loadTransactions(pageIndex, pageSize);
+loadNextPage(): void {
+if (!this.txNextCursor) return;
+this.txCursorStack.push(this.txNextCursor);
+this.loadTransactions(this.txNextCursor, this.txPageSize);
+}
+
+loadPrevPage(): void {
+this.txCursorStack.pop(); // remove current page cursor
+const cursor = this.txCursorStack.length > 0 ? this.txCursorStack[this.txCursorStack.length - 1] : null;
+this.loadTransactions(cursor, this.txPageSize);
 }
 
 onDateFilterChange(): void {
-this.loadTransactions(0, this.txPageSize);
+this.txCursorStack = [];
+this.loadTransactions(null, this.txPageSize);
 }
 
 formatCents(cents: number, currency: string): string {

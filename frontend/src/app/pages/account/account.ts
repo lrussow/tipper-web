@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -9,7 +9,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
@@ -28,7 +27,6 @@ MatFormFieldModule,
 MatDatepickerModule,
 MatNativeDateModule,
 MatTableModule,
-MatPaginatorModule,
 MatProgressSpinnerModule,
 MatIconModule,
 ],
@@ -37,8 +35,6 @@ styleUrl: './account.scss',
 })
 export class Account implements OnInit {
 vm: AccountViewModel;
-
-@ViewChild(MatPaginator) paginator?: MatPaginator;
 
 constructor(
 private auth: AuthService,
@@ -49,9 +45,5 @@ this.vm = new AccountViewModel(auth, http);
 
 async ngOnInit(): Promise<void> {
 await this.vm.init();
-}
-
-onPageChange(event: PageEvent): void {
-this.vm.onPageChange(event.pageIndex, event.pageSize);
 }
 }

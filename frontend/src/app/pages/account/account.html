@@ -95,52 +95,6 @@
       } @else {
         <mat-tab-group id="account-tab-panel" animationDuration="200ms">
 
-          <!-- ---- Account Tab (default) ---- -->
-          <mat-tab label="Account">
-            <div class="tab-content">
-              @if (vm.profile) {
-                <div class="account-info">
-                  <div class="info-row">
-                    <span class="info-label">Email</span>
-                    <span class="info-value" id="account-profile-email">{{ vm.profile.email }}</span>
-                  </div>
-                  @if (vm.profile.first_name || vm.profile.last_name) {
-                    <div class="info-row">
-                      <span class="info-label">Name</span>
-                      <span class="info-value">{{ vm.profile.first_name }} {{ vm.profile.last_name }}</span>
-                    </div>
-                  }
-                  @if (vm.profile.phone) {
-                    <div class="info-row">
-                      <span class="info-label">Phone</span>
-                      <span class="info-value">{{ vm.profile.phone }}</span>
-                    </div>
-                  }
-                </div>
-                <div class="stripe-status" id="account-stripe-status-summary">
-                  <div class="status-row">
-                    <span class="status-label">Stripe Connected</span>
-                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_onboarding_complete" [class.badge-warn]="!vm.profile.stripe_onboarding_complete">
-                      {{ vm.profile.stripe_onboarding_complete ? 'Connected' : 'Not Connected' }}
-                    </span>
-                  </div>
-                  <div class="status-row">
-                    <span class="status-label">Charges Enabled</span>
-                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_charges_enabled" [class.badge-warn]="!vm.profile.stripe_charges_enabled">
-                      {{ vm.profile.stripe_charges_enabled ? 'Yes' : 'No' }}
-                    </span>
-                  </div>
-                  <div class="status-row">
-                    <span class="status-label">Payouts Enabled</span>
-                    <span class="status-badge" [class.badge-ok]="vm.profile.stripe_payouts_enabled" [class.badge-warn]="!vm.profile.stripe_payouts_enabled">
-                      {{ vm.profile.stripe_payouts_enabled ? 'Yes' : 'No' }}
-                    </span>
-                  </div>
-                </div>
-              }
-            </div>
-          </mat-tab>
-
           <!-- ---- Change Password Tab ---- -->
           <mat-tab label="Change Password">
             <div class="tab-content">
@@ -307,9 +261,9 @@
                     <th mat-header-cell *matHeaderCellDef>Total</th>
                     <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.total_cents, row.currency) }}</td>
                   </ng-container>
-                  <ng-container matColumnDef="provider_fee_cents">
-                    <th mat-header-cell *matHeaderCellDef>Provider Fee</th>
-                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.provider_fee_cents, row.currency) }}</td>
+                  <ng-container matColumnDef="stripe_fee_cents">
+                    <th mat-header-cell *matHeaderCellDef>Stripe Fee</th>
+                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.stripe_fee_cents, row.currency) }}</td>
                   </ng-container>
                   <ng-container matColumnDef="tipper_fee_cents">
                     <th mat-header-cell *matHeaderCellDef>Tipper Fee</th>
@@ -328,15 +282,10 @@
                   </tr>
                 </table>
 
-                <mat-paginator
-                  id="account-tx-paginator"
-                  [length]="vm.txTotalCount"
-                  [pageSize]="vm.txPageSize"
-                  [pageIndex]="vm.txPageIndex"
-                  [pageSizeOptions]="[10, 20, 50]"
-                  showFirstLastButtons
-                  (page)="onPageChange($event)">
-                </mat-paginator>
+                <div class="tx-pagination">
+                  <button id="account-tx-prev" class="tx-page-btn" [disabled]="vm.txCursorStack.length === 0 || vm.txLoading" (click)="vm.loadPrevPage()">← Prev</button>
+                  <button id="account-tx-next" class="tx-page-btn" [disabled]="!vm.txHasMore || vm.txLoading" (click)="vm.loadNextPage()">Next →</button>
+                </div>
               }
             </div>
           </mat-tab>

@@ -17,6 +17,7 @@ export class AccountViewModel {
 session: AuthSession | null = null;
 isRecoveryMode = false;
 activeTab: AccountTab = 'account';
+profileNotFound = false;
 
 // Auth state
 signInMode: SignInMode = 'password';
@@ -104,6 +105,7 @@ this.isRecoveryMode = false;
 await this.loadProfile();
 } else if (!session && wasSignedIn) {
 this.profile = null;
+this.profileNotFound = false;
 this.transactions = [];
 this.txHasMore = false;
 this.txNextCursor = null;
@@ -195,6 +197,7 @@ this.passwordLoading = false;
 // ---- Profile ----
 
 private async loadProfile(): Promise<void> {
+if (this.profileNotFound) return;
 this.profileLoading = true;
 try {
 const me = await firstValueFrom(
@@ -226,7 +229,13 @@ phone: profile.phone ?? '',
 email: profile.email ?? '',
 };
 } catch (e: unknown) {
+const status = (e as { status?: number })?.status;
+if (status === 404) {
+this.profileNotFound = true;
+this.logger.d('loadProfile: no customer record found (404)');
+} else {
 this.logger.e('loadProfile failed', e);
+}
 } finally {
 this.profileLoading = false;
 }

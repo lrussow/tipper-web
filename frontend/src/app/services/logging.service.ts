@@ -29,6 +29,7 @@ export class LoggingService {
 	minLevel: LogLevel = LogLevel.INFO;
 
 	private tag: string = 'App';
+	private debugModeEnabled = false;
 
 	private readonly appMeta: Record<string, string> = {
 		platform: 'web',
@@ -52,6 +53,8 @@ export class LoggingService {
 	}
 
 	async enableDebugMode(): Promise<void> {
+		if (this.debugModeEnabled) return;
+		this.debugModeEnabled = true;
 		this.minLevel = LogLevel.DEBUG;
 		const token = this.auth.getAccessToken();
 		if (!token) return;
@@ -116,13 +119,27 @@ export class LoggingService {
 		this.postAsync(LogLevel[level], sanitized, error);
 	}
 
+	private serializeError(error: unknown): string {
+		if (error instanceof Error) {
+			return error.stack ?? `${error.name}: ${error.message}`;
+		}
+		if (error !== null && typeof error === 'object') {
+			try {
+				return JSON.stringify(error);
+			} catch {
+				return Object.prototype.toString.call(error);
+			}
+		}
+		return String(error);
+	}
+
 	private postAsync(level: string, message: string, error?: unknown): void {
 		const payload: LogEventPayload = {
 			timestamp: new Date().toISOString(),
 			level,
 			tag: this.tag,
 			message,
-			throwable: error ? this.sanitize(String(error)) : undefined,
+			throwable: error !== undefined ? this.sanitize(this.serializeError(error)) : undefined,
 			app: this.appMeta,
 			device: this.deviceMeta,
 			context: {},

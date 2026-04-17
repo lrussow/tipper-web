@@ -168,7 +168,7 @@ export class HomeComponent implements OnInit {
 - CORS enabled for `http://localhost:4200` (dev)
 - Use `async def` for all route handlers
 - Never commit `.env` with real credentials — use `.env.example`
-- **Account provisioning:** `GET /account/me` auto-creates `emails` + `customers` rows on first login — do not return 404 for missing records; provision instead.
+- **Account provisioning:** `GET /account/me` is **read-only** — it looks up `emails` and `customers` by the JWT email claim using `user_client` (so RLS applies). Never INSERT from this endpoint.
 - **CORS + exceptions:** All unhandled exceptions must return a `JSONResponse` via `@app.exception_handler(Exception)` so CORS headers are always present. Never let raw Python exceptions bypass middleware.
 
 ---

@@ -97,25 +97,25 @@
               <p class="section-heading">Contact Info</p>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>First Name</mat-label>
-                <input id="contact-first-name" matInput placeholder="First name" [(ngModel)]="vm.contactForm.first_name" />
+                <input id="contact-first-name" matInput placeholder="First name" required [(ngModel)]="vm.contactForm.first_name" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Last Name</mat-label>
-                <input id="contact-last-name" matInput placeholder="Last name" [(ngModel)]="vm.contactForm.last_name" />
+                <input id="contact-last-name" matInput placeholder="Last name" required [(ngModel)]="vm.contactForm.last_name" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Phone</mat-label>
-                <input id="contact-phone" matInput type="tel" placeholder="+1 555 000 0000" [(ngModel)]="vm.contactForm.phone" />
+                <input id="contact-phone" matInput type="tel" placeholder="+1 555 000 0000" required [(ngModel)]="vm.contactForm.phone" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Email</mat-label>
-                <input id="contact-email" matInput type="email" [(ngModel)]="vm.contactForm.email" />
+                <input id="contact-email" matInput type="email" required [(ngModel)]="vm.contactForm.email" />
               </mat-form-field>
 
               <p class="section-heading">Address</p>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Address Line 1</mat-label>
-                <input id="address-line1" matInput placeholder="123 Main St" [(ngModel)]="vm.addressForm.line1" />
+                <input id="address-line1" matInput placeholder="123 Main St" required [(ngModel)]="vm.addressForm.line1" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Address Line 2</mat-label>
@@ -123,19 +123,19 @@
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>City</mat-label>
-                <input id="address-city" matInput placeholder="City" [(ngModel)]="vm.addressForm.city" />
+                <input id="address-city" matInput placeholder="City" required [(ngModel)]="vm.addressForm.city" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Postal / ZIP Code</mat-label>
-                <input id="address-postal" matInput placeholder="Postal Code" [(ngModel)]="vm.addressForm.postal_code" />
+                <input id="address-postal" matInput placeholder="Postal Code" required [(ngModel)]="vm.addressForm.postal_code" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Country (ISO2)</mat-label>
-                <input id="address-country" matInput placeholder="e.g. CA or US" [(ngModel)]="vm.addressForm.country_iso2" />
+                <input id="address-country" matInput placeholder="e.g. CA or US" required [(ngModel)]="vm.addressForm.country_iso2" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Province / State Code</mat-label>
-                <input id="address-state" matInput placeholder="e.g. ON or NY" [(ngModel)]="vm.addressForm.subdivision_code" />
+                <input id="address-state" matInput placeholder="e.g. ON or NY" required [(ngModel)]="vm.addressForm.subdivision_code" />
               </mat-form-field>
               <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.profileSaveLoading" (click)="vm.saveProfile()">
                 @if (vm.profileSaveLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Profile }

@@ -121,7 +121,7 @@ export class LoggingService {
 				break;
 		}
 
-		this.postAsync(LogLevel[level], sanitized, error);
+		this.postAsync(LogLevel[level], sanitized, level === LogLevel.ERROR ? error : undefined);
 	}
 
 	private serializeError(error: unknown): string {

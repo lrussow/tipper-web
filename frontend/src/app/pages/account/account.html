@@ -94,58 +94,69 @@
           <!-- ---- Profile Tab (Contact + Address) ---- -->
           <mat-tab label="Profile">
             <div class="tab-content">
-              <p class="section-heading">Contact Info</p>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>First Name</mat-label>
-                <input id="contact-first-name" matInput placeholder="First name" required [(ngModel)]="vm.contactForm.first_name" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Last Name</mat-label>
-                <input id="contact-last-name" matInput placeholder="Last name" required [(ngModel)]="vm.contactForm.last_name" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Phone</mat-label>
-                <input id="contact-phone" matInput type="tel" placeholder="+1 555 000 0000" required [(ngModel)]="vm.contactForm.phone" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Email</mat-label>
-                <input id="contact-email" matInput type="email" required [(ngModel)]="vm.contactForm.email" />
-              </mat-form-field>
+              <form #profileForm="ngForm">
+                <p class="section-heading">Contact Info</p>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>First Name</mat-label>
+                  <input id="contact-first-name" name="first_name" matInput placeholder="First name" required [(ngModel)]="vm.contactForm.first_name" />
+                  <mat-error>First name is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Last Name</mat-label>
+                  <input id="contact-last-name" name="last_name" matInput placeholder="Last name" required [(ngModel)]="vm.contactForm.last_name" />
+                  <mat-error>Last name is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Phone</mat-label>
+                  <input id="contact-phone" name="phone" matInput type="tel" placeholder="+1 555 000 0000" required [(ngModel)]="vm.contactForm.phone" />
+                  <mat-error>Phone is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Email</mat-label>
+                  <input id="contact-email" name="email" matInput type="email" required [(ngModel)]="vm.contactForm.email" />
+                  <mat-error>Email is required</mat-error>
+                </mat-form-field>
 
-              <p class="section-heading">Address</p>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Address Line 1</mat-label>
-                <input id="address-line1" matInput placeholder="123 Main St" required [(ngModel)]="vm.addressForm.line1" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Address Line 2</mat-label>
-                <input id="address-line2" matInput placeholder="Suite 100" [(ngModel)]="vm.addressForm.line2" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>City</mat-label>
-                <input id="address-city" matInput placeholder="City" required [(ngModel)]="vm.addressForm.city" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Postal / ZIP Code</mat-label>
-                <input id="address-postal" matInput placeholder="Postal Code" required [(ngModel)]="vm.addressForm.postal_code" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Country (ISO2)</mat-label>
-                <input id="address-country" matInput placeholder="e.g. CA or US" required [(ngModel)]="vm.addressForm.country_iso2" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Province / State Code</mat-label>
-                <input id="address-state" matInput placeholder="e.g. ON or NY" required [(ngModel)]="vm.addressForm.subdivision_code" />
-              </mat-form-field>
-              <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.profileSaveLoading" (click)="vm.saveProfile()">
-                @if (vm.profileSaveLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Profile }
-              </button>
-              @if (vm.profileSaveError) {
-                <p class="form-error" id="account-profile-save-error">{{ vm.profileSaveError }}</p>
-              }
-              @if (vm.profileSaveSuccess) {
-                <p class="form-success" id="account-profile-save-success">{{ vm.profileSaveSuccess }}</p>
-              }
+                <p class="section-heading">Address</p>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Address Line 1</mat-label>
+                  <input id="address-line1" name="address_line1" matInput placeholder="123 Main St" required [(ngModel)]="vm.addressForm.line1" />
+                  <mat-error>Address line 1 is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Address Line 2</mat-label>
+                  <input id="address-line2" name="address_line2" matInput placeholder="Suite 100" [(ngModel)]="vm.addressForm.line2" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>City</mat-label>
+                  <input id="address-city" name="address_city" matInput placeholder="City" required [(ngModel)]="vm.addressForm.city" />
+                  <mat-error>City is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Postal / ZIP Code</mat-label>
+                  <input id="address-postal" name="address_postal_code" matInput placeholder="Postal Code" required [(ngModel)]="vm.addressForm.postal_code" />
+                  <mat-error>Postal code is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Country (ISO2)</mat-label>
+                  <input id="address-country" name="address_country_iso2" matInput placeholder="e.g. CA or US" required [(ngModel)]="vm.addressForm.country_iso2" />
+                  <mat-error>Country is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Province / State Code</mat-label>
+                  <input id="address-state" name="address_subdivision_code" matInput placeholder="e.g. ON or NY" required [(ngModel)]="vm.addressForm.subdivision_code" />
+                  <mat-error>Province / State is required</mat-error>
+                </mat-form-field>
+                <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.profileSaveLoading || profileForm.invalid" (click)="vm.saveProfile()">
+                  @if (vm.profileSaveLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Profile }
+                </button>
+                @if (vm.profileSaveError) {
+                  <p class="form-error" id="account-profile-save-error">{{ vm.profileSaveError }}</p>
+                }
+                @if (vm.profileSaveSuccess) {
+                  <p class="form-success" id="account-profile-save-success">{{ vm.profileSaveSuccess }}</p>
+                }
+              </form>
             </div>
           </mat-tab>
 

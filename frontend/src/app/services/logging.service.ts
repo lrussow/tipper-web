@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
+import { LogEvent } from '../models/log-event.model';
 
 export enum LogLevel {
 	VERBOSE = 0,
@@ -12,17 +13,6 @@ export enum LogLevel {
 }
 
 const DEV_EMAILS = ['lrussow@gmail.com'];
-
-interface LogEventPayload {
-	timestamp: string;
-	level: string;
-	tag: string;
-	message: string;
-	throwable?: string;
-	app: Record<string, string>;
-	device: Record<string, string>;
-	context: Record<string, string>;
-}
 
 @Injectable({ providedIn: 'root' })
 export class LoggingService {
@@ -139,7 +129,7 @@ export class LoggingService {
 	}
 
 	private postAsync(level: string, message: string, error?: unknown): void {
-		const payload: LogEventPayload = {
+		const payload: LogEvent = {
 			timestamp: new Date().toISOString(),
 			level,
 			tag: this.tag,

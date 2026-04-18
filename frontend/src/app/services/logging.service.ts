@@ -144,6 +144,8 @@ export class LoggingService {
 	}
 
 	private postAsync(level: string, message: string, error?: unknown): void {
+		const token = this.auth.getAccessToken();
+		if (!token) return;
 		const payload: LogEvent = {
 			timestamp: new Date().toISOString(),
 			level,
@@ -156,7 +158,7 @@ export class LoggingService {
 		};
 		// Fire-and-forget — do not await
 		this.http.post(`${environment.tipperApiBase}/logs`, payload, {
-			headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+			headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }),
 		}).subscribe({ error: () => { /* best-effort */ } });
 	}
 

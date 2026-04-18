@@ -82,11 +82,26 @@ export class LoggingService {
 		this.log(LogLevel.ERROR, message, error);
 	}
 
-	/** Call after sign-in to enable debug mode for dev users. */
+	/** Call after sign-in to set the appropriate log level. */
 	checkDevMode(email: string): void {
 		if (DEV_EMAILS.includes(email.toLowerCase())) {
 			this.enableDebugMode();
+		} else {
+			this.setInfoMode();
 		}
+	}
+
+	async setInfoMode(): Promise<void> {
+		this.minLevel = LogLevel.INFO;
+		const token = this.auth.getAccessToken();
+		if (!token) return;
+		try {
+			await fetch(`${environment.tipperApiBase}/log-level`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+				body: JSON.stringify({ level: 'INFO' }),
+			});
+		} catch { /* best-effort */ }
 	}
 
 	private log(level: LogLevel, message: string, error?: unknown): void {

@@ -6,6 +6,7 @@ import { CustomerProfile } from '../models/customer-profile.model';
 import { AddressForm } from '../models/address-form.model';
 import { AccountContactForm } from '../models/account-contact-form.model';
 import { Transaction, TransactionPage } from '../models/transaction.model';
+import { UpdateProfileRequest } from '../models/update-profile-request.model';
 import { environment } from '../../environments/environment';
 
 export type AccountTab = 'account' | 'change-password' | 'address' | 'contact' | 'stripe' | 'transactions';
@@ -45,9 +46,6 @@ postal_code: '',
 country_iso2: '',
 subdivision_code: '',
 };
-addressError = '';
-addressSuccess = '';
-addressLoading = false;
 
 // Contact tab
 contactForm: AccountContactForm = {
@@ -56,9 +54,6 @@ last_name: '',
 phone: '',
 email: '',
 };
-contactError = '';
-contactSuccess = '';
-contactLoading = false;
 
 // Unified profile save
 profileSaveLoading = false;
@@ -255,69 +250,42 @@ this.profileLoading = false;
 }
 }
 
-// ---- Address ----
-
-async saveAddress(): Promise<void> {
-if (!this.profile) return;
-this.addressError = '';
-this.addressSuccess = '';
-this.addressLoading = true;
-try {
-await firstValueFrom(
-this.http.patch(
-`${environment.tipperApiBase}/account/address`,
-{ customer_id: this.profile.customer_id, ...this.addressForm },
-{ headers: this.authHeaders() }
-)
-);
-this.addressSuccess = 'Address saved successfully.';
-await this.loadProfile();
-} catch (e: unknown) {
-this.addressError = this.extractError(e, 'Failed to save address.');
-this.logger.e('saveAddress failed', e);
-} finally {
-this.addressLoading = false;
-}
-}
-
-// ---- Contact ----
-
-async saveContact(): Promise<void> {
-if (!this.profile) return;
-this.contactError = '';
-this.contactSuccess = '';
-this.contactLoading = true;
-try {
-await firstValueFrom(
-this.http.patch(
-`${environment.tipperApiBase}/account/contact`,
-{ customer_id: this.profile.customer_id, ...this.contactForm },
-{ headers: this.authHeaders() }
-)
-);
-this.contactSuccess = 'Contact info saved successfully.';
-await this.loadProfile();
-} catch (e: unknown) {
-this.contactError = this.extractError(e, 'Failed to save contact info.');
-this.logger.e('saveContact failed', e);
-} finally {
-this.contactLoading = false;
-}
-}
+// ---- Profile Save ----
 
 async saveProfile(): Promise<void> {
-	this.profileSaveError = '';
-	this.profileSaveSuccess = '';
-	this.profileSaveLoading = true;
-	try {
-		await Promise.all([this.saveContact(), this.saveAddress()]);
-		if (!this.contactError && !this.addressError)
-			this.profileSaveSuccess = 'Profile saved successfully.';
-		else
-			this.profileSaveError = [this.contactError, this.addressError].filter(Boolean).join(' ');
-	} finally {
-		this.profileSaveLoading = false;
-	}
+if (!this.profile) return;
+this.profileSaveError = '';
+this.profileSaveSuccess = '';
+this.profileSaveLoading = true;
+try {
+const body: UpdateProfileRequest = {
+customer_id: this.profile.customer_id,
+first_name: this.contactForm.first_name || undefined,
+last_name: this.contactForm.last_name || undefined,
+phone: this.contactForm.phone || undefined,
+email: this.contactForm.email || undefined,
+address_line1: this.addressForm.line1 || undefined,
+address_line2: this.addressForm.line2 || undefined,
+address_city: this.addressForm.city || undefined,
+address_postal_code: this.addressForm.postal_code || undefined,
+address_country_iso2: this.addressForm.country_iso2 || undefined,
+address_subdivision_code: this.addressForm.subdivision_code || undefined,
+};
+await firstValueFrom(
+this.http.patch(
+`${environment.tipperApiBase}/account/profile`,
+body,
+{ headers: this.authHeaders() }
+)
+);
+this.profileSaveSuccess = 'Profile saved successfully.';
+await this.loadProfile();
+} catch (e: unknown) {
+this.profileSaveError = this.extractError(e, 'Failed to save profile.');
+this.logger.e('saveProfile failed', e);
+} finally {
+this.profileSaveLoading = false;
+}
 }
 
 // ---- Stripe ----

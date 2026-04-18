@@ -260,16 +260,16 @@ this.profileSaveLoading = true;
 try {
 const body: UpdateProfileRequest = {
 customer_id: this.profile.customer_id,
-first_name: this.contactForm.first_name || undefined,
-last_name: this.contactForm.last_name || undefined,
-phone: this.contactForm.phone || undefined,
+first_name: this.contactForm.first_name ?? undefined,
+last_name: this.contactForm.last_name ?? undefined,
+phone: this.contactForm.phone ?? undefined,
 email: this.contactForm.email || undefined,
-address_line1: this.addressForm.line1 || undefined,
+address_line1: this.addressForm.line1 ?? undefined,
 address_line2: this.addressForm.line2 ?? undefined,
-address_city: this.addressForm.city || undefined,
-address_postal_code: this.addressForm.postal_code || undefined,
-address_country_iso2: this.addressForm.country_iso2 || undefined,
-address_subdivision_code: this.addressForm.subdivision_code || undefined,
+address_city: this.addressForm.city ?? undefined,
+address_postal_code: this.addressForm.postal_code ?? undefined,
+address_country_iso2: this.addressForm.country_iso2 ?? undefined,
+address_subdivision_code: this.addressForm.subdivision_code ?? undefined,
 };
 await firstValueFrom(
 this.http.patch(

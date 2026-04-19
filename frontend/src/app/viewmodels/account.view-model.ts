@@ -407,4 +407,33 @@ return String((err as { detail: unknown }).detail);
 }
 return fallback;
 }
+
+// ---- Input masking (mirrors Android StripeExpressViewModel) ----
+
+private formatPhone(input: string): string {
+const digits = input.replace(/\D/g, '').slice(0, 10);
+if (!digits) return '';
+let result = '(' + digits.slice(0, 3);
+if (digits.length > 3) result += ')' + digits.slice(3, 6);
+if (digits.length > 6) result += '-' + digits.slice(6);
+return result;
+}
+
+private formatPostal(input: string, iso2?: string): string {
+const country = (iso2 ?? '').toUpperCase();
+if (country === 'US') return input.replace(/\D/g, '').slice(0, 5);
+if (country === 'CA') {
+  const clean = input.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 6);
+  return clean.length > 3 ? clean.slice(0, 3) + '-' + clean.slice(3) : clean;
+}
+return input;
+}
+
+onPhoneChange(value: string): void {
+this.contactForm.phone = this.formatPhone(value);
+}
+
+onPostalChange(value: string): void {
+this.addressForm.postal_code = this.formatPostal(value, this.addressForm.country_iso2);
+}
 }

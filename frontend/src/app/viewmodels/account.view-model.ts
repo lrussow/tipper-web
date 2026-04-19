@@ -301,7 +301,7 @@ this.http.get<{ url: string }>(
 { headers: this.authHeaders() }
 )
 );
-window.open(resp.url, '_blank');
+window.location.href = resp.url;
 } catch (e: unknown) {
 this.stripeError = this.extractError(e, 'Could not load Stripe link. Please try again.');
 this.logger.e('openStripeOnboarding failed', e);

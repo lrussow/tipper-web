@@ -96,6 +96,11 @@ this.isRecoveryMode = true;
 return;
 }
 
+const params = new URLSearchParams(window.location.search);
+if (params.get('tab') === 'stripe') {
+this.selectedTabIndex = 2;
+}
+
 if (this.session) {
 await this.loadProfile();
 }
@@ -295,7 +300,7 @@ if (!this.profile) return;
 this.stripeError = '';
 this.stripeLoading = true;
 try {
-const accountPageUrl = `${window.location.origin}/account`;
+const accountPageUrl = `${window.location.origin}/account?tab=stripe`;
 const params = new URLSearchParams({
   customer_id: this.profile.customer_id,
   return_url: accountPageUrl,

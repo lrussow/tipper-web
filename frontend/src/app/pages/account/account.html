@@ -108,8 +108,9 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Phone</mat-label>
-                  <input id="contact-phone" name="phone" matInput type="tel" placeholder="+1 555 000 0000" required [(ngModel)]="vm.contactForm.phone" />
-                  <mat-error>Phone is required</mat-error>
+                  <input id="contact-phone" name="phone" matInput type="tel" placeholder="(416)555-0123" required pattern="\(\d{3}\)\d{3}-\d{4}" #phoneInput="ngModel" [(ngModel)]="vm.contactForm.phone" />
+                  <mat-error *ngIf="phoneInput.hasError('required')">Phone is required</mat-error>
+                  <mat-error *ngIf="phoneInput.hasError('pattern')">Enter phone as (XXX)XXX-XXXX</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Email</mat-label>
@@ -134,8 +135,9 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Postal / ZIP Code</mat-label>
-                  <input id="address-postal" name="address_postal_code" matInput placeholder="Postal Code" required [(ngModel)]="vm.addressForm.postal_code" />
-                  <mat-error>Postal code is required</mat-error>
+                  <input id="address-postal" name="address_postal_code" matInput placeholder="12345 or A1A-1A1" required pattern="\d{5}|[A-Za-z]\d[A-Za-z]-\d[A-Za-z]\d" #postalInput="ngModel" [(ngModel)]="vm.addressForm.postal_code" />
+                  <mat-error *ngIf="postalInput.hasError('required')">Postal code is required</mat-error>
+                  <mat-error *ngIf="postalInput.hasError('pattern')">US: 5 digits (12345) · CA: A1A-1A1</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Country (ISO2)</mat-label>

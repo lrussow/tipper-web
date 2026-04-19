@@ -436,4 +436,42 @@ this.contactForm.phone = this.formatPhone(value);
 onPostalChange(value: string): void {
 this.addressForm.postal_code = this.formatPostal(value, this.addressForm.country_iso2);
 }
+
+onPhoneInput(event: Event): void {
+const input = event.target as HTMLInputElement;
+const cursorPos = input.selectionStart ?? 0;
+const rawValue = input.value;
+const digitsBeforeCursor = rawValue.slice(0, cursorPos).replace(/\D/g, '').length;
+const formatted = this.formatPhone(rawValue);
+this.contactForm.phone = formatted;
+requestAnimationFrame(() => {
+  let pos = 0;
+  let digits = 0;
+  for (let i = 0; i < formatted.length; i++) {
+    if (digits === digitsBeforeCursor) { pos = i; break; }
+    if (/\d/.test(formatted[i])) digits++;
+    pos = i + 1;
+  }
+  input.setSelectionRange(pos, pos);
+});
+}
+
+onPostalInput(event: Event): void {
+const input = event.target as HTMLInputElement;
+const cursorPos = input.selectionStart ?? 0;
+const rawValue = input.value;
+const charsBeforeCursor = rawValue.slice(0, cursorPos).replace(/[^A-Za-z0-9]/g, '').length;
+const formatted = this.formatPostal(rawValue, this.addressForm.country_iso2);
+this.addressForm.postal_code = formatted;
+requestAnimationFrame(() => {
+  let pos = 0;
+  let chars = 0;
+  for (let i = 0; i < formatted.length; i++) {
+    if (chars === charsBeforeCursor) { pos = i; break; }
+    if (/[A-Za-z0-9]/.test(formatted[i])) chars++;
+    pos = i + 1;
+  }
+  input.setSelectionRange(pos, pos);
+});
+}
 }

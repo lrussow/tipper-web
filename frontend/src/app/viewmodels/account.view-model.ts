@@ -10,23 +10,13 @@ import { UpdateProfileRequest } from '../models/update-profile-request.model';
 import { environment } from '../../environments/environment';
 
 export type AccountTab = 'account' | 'change-password' | 'address' | 'contact' | 'stripe' | 'transactions';
-export type SignInMode = 'password' | 'forgot';
 
 export const TX_COLUMNS = ['created_at', 'currency', 'total_cents', 'stripe_fee_cents', 'tipper_fee_cents', 'net_cents'];
 
 export class AccountViewModel {
 session: AuthSession | null = null;
-isRecoveryMode = false;
 activeTab: AccountTab = 'account';
 profileNotFound = false;
-
-// Auth state
-signInMode: SignInMode = 'password';
-loginEmail = '';
-loginPassword = '';
-authError = '';
-authSuccess = '';
-authLoading = false;
 
 // Profile tab
 profile: CustomerProfile | null = null;
@@ -80,101 +70,30 @@ txLoading = false;
 readonly txColumns = TX_COLUMNS;
 
 constructor(
-private auth: AuthService,
-private http: HttpClient,
-private logger: LoggingService,
+  private auth: AuthService,
+  private http: HttpClient,
+  private logger: LoggingService,
 ) {
-this.logger = logger.withTag('AccountViewModel');
+  this.logger = logger.withTag('AccountViewModel');
 }
 
 async init(): Promise<void> {
-this.session = this.auth.getSession();
+  this.session = this.auth.getSession();
 
-const hash = window.location.hash;
-if (hash.includes('type=recovery')) {
-this.isRecoveryMode = true;
-return;
-}
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('tab') === 'stripe') {
+    this.selectedTabIndex = 2;
+  }
 
-const params = new URLSearchParams(window.location.search);
-if (params.get('tab') === 'stripe') {
-this.selectedTabIndex = 2;
-}
-
-if (this.session) {
-await this.loadProfile();
-}
-
-this.auth.onAuthStateChange(async (session: AuthSession | null) => {
-const wasSignedIn = !!this.session;
-this.session = session;
-if (session && !wasSignedIn) {
-this.isRecoveryMode = false;
-await this.loadProfile();
-} else if (!session && wasSignedIn) {
-this.profile = null;
-this.profileNotFound = false;
-this.transactions = [];
-this.txHasMore = false;
-this.txNextCursor = null;
-this.txCursorStack = [];
-this.isRecoveryMode = false;
-}
-});
-}
-
-// ---- Auth ----
-
-async signInWithOAuth(provider: 'google' | 'apple' | 'facebook' | 'twitter'): Promise<void> {
-this.authError = '';
-this.authLoading = true;
-try {
-await this.auth.signInWithOAuth(provider);
-} finally {
-this.authLoading = false;
-}
-}
-
-async signInWithPassword(): Promise<void> {
-if (!this.loginEmail || !this.loginPassword) return;
-this.authError = '';
-this.authLoading = true;
-try {
-const err = await this.auth.signInWithPassword(this.loginEmail, this.loginPassword);
-if (err) {
-this.authError = err;
-} else {
-this.logger.checkDevMode(this.loginEmail);
-}
-} finally {
-this.authLoading = false;
-}
-}
-
-async sendForgotPassword(): Promise<void> {
-if (!this.loginEmail) {
-this.authError = 'Please enter your email address.';
-return;
-}
-this.authError = '';
-this.authLoading = true;
-try {
-const err = await this.auth.resetPasswordForEmail(this.loginEmail);
-if (err) {
-this.authError = err;
-} else {
-this.authSuccess = 'Password reset email sent. Check your inbox.';
-this.signInMode = 'password';
-}
-} finally {
-this.authLoading = false;
-}
+  if (this.session) {
+    await this.loadProfile();
+  }
 }
 
 async signOut(): Promise<void> {
-await this.auth.signOut();
-this.profile = null;
-this.session = null;
+  await this.auth.signOut();
+  this.profile = null;
+  this.session = null;
 }
 
 // ---- Password Change ----
@@ -199,7 +118,6 @@ this.passwordError = err;
 this.passwordSuccess = 'Password updated successfully.';
 this.newPassword = '';
 this.confirmPassword = '';
-this.isRecoveryMode = false;
 }
 } finally {
 this.passwordLoading = false;

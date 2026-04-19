@@ -1,88 +1,9 @@
 <div class="account-page">
 
   <!-- ============================================================ -->
-  <!-- Recovery Mode (password reset link from email)              -->
+  <!-- Account Dashboard                                            -->
   <!-- ============================================================ -->
-  @if (vm.isRecoveryMode) {
-    <div class="auth-card">
-      <h2 class="auth-title">Set New Password</h2>
-      @if (vm.passwordError) {
-        <p class="form-error" id="account-password-error">{{ vm.passwordError }}</p>
-      }
-      @if (vm.passwordSuccess) {
-        <p class="form-success" id="account-password-success">{{ vm.passwordSuccess }}</p>
-      }
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>New Password</mat-label>
-        <input id="recovery-new-password" matInput type="password" placeholder="New password" [(ngModel)]="vm.newPassword" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Confirm Password</mat-label>
-        <input id="recovery-confirm-password" matInput type="password" placeholder="Confirm new password" [(ngModel)]="vm.confirmPassword" />
-      </mat-form-field>
-      <button id="account-set-password-btn" mat-raised-button color="primary" [disabled]="vm.passwordLoading" (click)="vm.changePassword()">
-        @if (vm.passwordLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Set Password }
-      </button>
-    </div>
-  }
-
-  <!-- ============================================================ -->
-  <!-- Unauthenticated: Sign-In Panel                               -->
-  <!-- ============================================================ -->
-  @else if (!vm.session) {
-    <div class="auth-card">
-      <h2 class="auth-title">Sign In to Your Account</h2>
-
-      @if (vm.authError) {
-        <p class="form-error" id="account-auth-error">{{ vm.authError }}</p>
-      }
-      @if (vm.authSuccess) {
-        <p class="form-success" id="account-auth-success">{{ vm.authSuccess }}</p>
-      }
-
-      <!-- Email / Password Form -->
-      @if (vm.signInMode === 'password') {
-        <div class="email-signin">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Email</mat-label>
-            <input id="account-email" matInput type="email" [(ngModel)]="vm.loginEmail" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Password</mat-label>
-            <input id="account-password" matInput type="password" placeholder="Password" [(ngModel)]="vm.loginPassword" />
-          </mat-form-field>
-          <button id="account-signin-btn" mat-raised-button color="primary" [disabled]="vm.authLoading" (click)="vm.signInWithPassword()">
-            @if (vm.authLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Sign In }
-          </button>
-          <button id="account-forgot-link" class="link-btn" (click)="vm.signInMode = 'forgot'">
-            Forgot password?
-          </button>
-        </div>
-      }
-
-      <!-- Forgot Password Form -->
-      @if (vm.signInMode === 'forgot') {
-        <div class="email-signin">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Email</mat-label>
-            <input id="account-forgot-email" matInput type="email" [(ngModel)]="vm.loginEmail" />
-          </mat-form-field>
-          <button id="account-reset-btn" mat-raised-button color="primary" [disabled]="vm.authLoading" (click)="vm.sendForgotPassword()">
-            @if (vm.authLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Send Reset Email }
-          </button>
-          <button id="account-back-link" class="link-btn" (click)="vm.signInMode = 'password'">
-            ← Back to sign in
-          </button>
-        </div>
-      }
-    </div>
-  }
-
-  <!-- ============================================================ -->
-  <!-- Authenticated: Account Dashboard                             -->
-  <!-- ============================================================ -->
-  @else {
-    <div class="account-dashboard">
+  <div class="account-dashboard">
 
       @if (vm.profileLoading) {
         <div class="loading-wrap">
@@ -291,6 +212,5 @@
         </mat-tab-group>
       }
     </div>
-  }
 
 </div>

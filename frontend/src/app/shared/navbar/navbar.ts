@@ -42,7 +42,7 @@ export class Navbar implements OnInit, OnDestroy {
 
 	async signOut(): Promise<void> {
 		await this.auth.signOut();
-		await this.router.navigate(['/account']);
+		await this.router.navigate(['/login']);
 	}
 }
 

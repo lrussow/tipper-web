@@ -29,6 +29,10 @@ export class AuthService {
 	private sessionSubject = new BehaviorSubject<AuthSession | null>(null);
 	readonly session$ = this.sessionSubject.asObservable();
 
+	private initResolve!: () => void;
+	/** Resolves once init() has completed — await before checking session. */
+	readonly ready: Promise<void> = new Promise(resolve => { this.initResolve = resolve; });
+
 	constructor(private http: HttpClient) {
 		this.channel.onmessage = (e: MessageEvent<BroadcastMessage>) => this.onCrossTabMessage(e.data);
 	}
@@ -45,6 +49,7 @@ export class AuthService {
 			} catch {
 				// non-fatal — hash token is still usable until expiry
 			}
+			this.initResolve();
 			return;
 		}
 		// Attempt silent restore via HttpOnly refresh cookie
@@ -53,6 +58,7 @@ export class AuthService {
 		} catch {
 			// No cookie or cookie expired — user is logged out
 		}
+		this.initResolve();
 	}
 
 	getSession(): AuthSession | null {

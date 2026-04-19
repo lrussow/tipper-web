@@ -14,6 +14,12 @@ $border: #e0e0e0;
 	box-sizing: border-box;
 }
 
+/* Suppress Chrome's native focus outline on matInput — Angular Material
+   draws its own, and the native one renders as a misaligned blue line. */
+input[matInput], textarea[matInput] {
+	outline: none;
+}
+
 html, body {
 	margin: 0;
 	padding: 0;

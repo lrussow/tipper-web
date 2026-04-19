@@ -295,9 +295,15 @@ if (!this.profile) return;
 this.stripeError = '';
 this.stripeLoading = true;
 try {
+const accountPageUrl = `${window.location.origin}/account`;
+const params = new URLSearchParams({
+  customer_id: this.profile.customer_id,
+  return_url: accountPageUrl,
+  refresh_url: accountPageUrl,
+});
 const resp = await firstValueFrom(
 this.http.get<{ url: string }>(
-`${environment.tipperApiBase}/stripe/express/account_link?customer_id=${this.profile.customer_id}`,
+`${environment.tipperApiBase}/stripe/express/account_link?${params.toString()}`,
 { headers: this.authHeaders() }
 )
 );

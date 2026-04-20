@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { AuthService } from './auth.service';
 import { LogEvent } from '../models/log-event.model';
 
 export enum LogLevel {
@@ -37,11 +36,10 @@ export class LoggingService {
 
 	constructor(
 		private readonly http: HttpClient,
-		private readonly auth: AuthService,
 	) {}
 
 	withTag(tag: string): LoggingService {
-		const child = new LoggingService(this.http, this.auth);
+		const child = new LoggingService(this.http);
 		child.tag = tag;
 		child.root = this;
 		return child;

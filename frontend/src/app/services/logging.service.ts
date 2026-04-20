@@ -51,12 +51,10 @@ export class LoggingService {
 		if (this.debugModeEnabled) return;
 		this.debugModeEnabled = true;
 		this.minLevel = LogLevel.DEBUG;
-		const token = this.auth.getAccessToken();
-		if (!token) return;
 		try {
 			await fetch(`${environment.tipperApiBase}/log-level`, {
 				method: 'PUT',
-				headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ level: 'DEBUG' }),
 			});
 		} catch { /* best-effort */ }
@@ -93,12 +91,10 @@ export class LoggingService {
 
 	async setInfoMode(): Promise<void> {
 		this.minLevel = LogLevel.INFO;
-		const token = this.auth.getAccessToken();
-		if (!token) return;
 		try {
 			await fetch(`${environment.tipperApiBase}/log-level`, {
 				method: 'PUT',
-				headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ level: 'INFO' }),
 			});
 		} catch { /* best-effort */ }
@@ -144,8 +140,6 @@ export class LoggingService {
 	}
 
 	private postAsync(level: string, message: string, error?: unknown): void {
-		const token = this.auth.getAccessToken();
-		if (!token) return;
 		const payload: LogEvent = {
 			timestamp: new Date().toISOString(),
 			level,
@@ -158,7 +152,7 @@ export class LoggingService {
 		};
 		// Fire-and-forget — do not await
 		this.http.post(`${environment.tipperApiBase}/logs`, payload, {
-			headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }),
+			headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 		}).subscribe({ error: () => { /* best-effort */ } });
 	}
 

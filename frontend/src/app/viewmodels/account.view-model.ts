@@ -59,6 +59,9 @@ selectedTabIndex = 0;
 
 // Transactions tab
 transactions: Transaction[] = [];
+get hasZeroStripeFee(): boolean {
+  return this.transactions.some(t => t.stripe_fee_cents === 0);
+}
 txHasMore = false;
 txNextCursor: string | null = null;
 txCursorStack: string[] = []; // stack of cursors for navigating back

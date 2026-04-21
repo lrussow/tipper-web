@@ -1395,6 +1395,13 @@ app-account .mat-mdc-tab-group {
 	}
 }
 
+.tx-fee-note {
+	margin-top: 10px;
+	font-size: 0.8rem;
+	color: #fff;
+	opacity: 0.85;
+}
+
 /* ── Account: Tablet (≤ 1024px) ── */
 @media (max-width: 1024px) {
 	.account-page {

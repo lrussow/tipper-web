@@ -147,6 +147,10 @@
                   <button id="account-tx-prev" class="tx-page-btn" [disabled]="vm.txCursorStack.length === 0 || vm.txLoading" (click)="vm.loadPrevPage()">← Prev</button>
                   <button id="account-tx-next" class="tx-page-btn" [disabled]="!vm.txHasMore || vm.txLoading" (click)="vm.loadNextPage()">Next →</button>
                 </div>
+
+                @if (vm.hasZeroStripeFee) {
+                  <p class="tx-fee-note">* A Stripe fee of $0.00 means the fee has not yet been calculated for that transaction.</p>
+                }
               }
             </div>
           </mat-tab>

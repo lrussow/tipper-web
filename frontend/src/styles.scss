@@ -1030,7 +1030,8 @@ app-account .mdc-tab-indicator__content--underline {
 }
 
 /* Material form-field overrides scoped to account page */
-app-account .mat-mdc-form-field {
+/* ── Global Material form field overrides ── */
+.mat-mdc-form-field {
 	--mdc-outlined-text-field-label-text-color: #{$accent};
 	--mdc-outlined-text-field-input-text-color: #{$accent};
 	--mdc-outlined-text-field-outline-color: #{$accent};
@@ -1097,8 +1098,8 @@ app-account .mat-mdc-form-field {
 	}
 }
 
-/* Material button overrides scoped to account page */
-app-account button[mat-raised-button][color='primary'] {
+/* ── Global Material button overrides ── */
+button[mat-raised-button][color='primary'] {
 	background-color: $primary;
 	color: #fff;
 
@@ -1111,7 +1112,7 @@ app-account button[mat-raised-button][color='primary'] {
 	}
 }
 
-app-account button[mat-stroked-button] {
+button[mat-stroked-button] {
 	color: #fff;
 	border-color: rgba(255, 255, 255, 0.4);
 }

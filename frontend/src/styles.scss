@@ -108,6 +108,19 @@ main {
 	text-align: center;
 	padding: 1.5rem;
 	font-size: 0.875rem;
+
+	.footer-links {
+		margin-top: 0.5rem;
+
+		a {
+			color: rgba(255, 255, 255, 0.5);
+			font-size: 0.8rem;
+
+			&:hover {
+				color: rgba(255, 255, 255, 0.9);
+			}
+		}
+	}
 }
 
 /* ────────────────────────────────────────────

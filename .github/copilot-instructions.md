@@ -244,3 +244,8 @@ print('Done')
 EOF
 "
 ```
+
+## Cross-platform instructions
+When working on any task, also reference the Copilot instructions from the other two platforms for full context:
+- **Backend:** `/Users/lorickrussow/Documents/thetipper-backend/.github/copilot-instructions.md`
+- **KMP (Android/iOS):** `/Users/lorickrussow/Documents/Tipper/.github/copilot-instructions.md`

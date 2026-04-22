@@ -14,6 +14,12 @@ $border: #e0e0e0;
 	box-sizing: border-box;
 }
 
+/* Suppress Chrome's native focus outline on matInput — Angular Material
+   draws its own, and the native one renders as a misaligned blue line. */
+input[matInput], textarea[matInput] {
+	outline: none;
+}
+
 html, body {
 	margin: 0;
 	padding: 0;
@@ -1024,7 +1030,8 @@ app-account .mdc-tab-indicator__content--underline {
 }
 
 /* Material form-field overrides scoped to account page */
-app-account .mat-mdc-form-field {
+/* ── Global Material form field overrides ── */
+.mat-mdc-form-field {
 	--mdc-outlined-text-field-label-text-color: #{$accent};
 	--mdc-outlined-text-field-input-text-color: #{$accent};
 	--mdc-outlined-text-field-outline-color: #{$accent};
@@ -1091,8 +1098,8 @@ app-account .mat-mdc-form-field {
 	}
 }
 
-/* Material button overrides scoped to account page */
-app-account button[mat-raised-button][color='primary'] {
+/* ── Global Material button overrides ── */
+button[mat-raised-button][color='primary'] {
 	background-color: $primary;
 	color: #fff;
 
@@ -1105,7 +1112,7 @@ app-account button[mat-raised-button][color='primary'] {
 	}
 }
 
-app-account button[mat-stroked-button] {
+button[mat-stroked-button] {
 	color: #fff;
 	border-color: rgba(255, 255, 255, 0.4);
 }
@@ -1387,6 +1394,13 @@ app-account .mat-mdc-tab-group {
 		opacity: 0.35;
 		cursor: not-allowed;
 	}
+}
+
+.tx-fee-note {
+	margin-top: 10px;
+	font-size: 0.8rem;
+	color: #fff;
+	opacity: 0.85;
 }
 
 /* ── Account: Tablet (≤ 1024px) ── */

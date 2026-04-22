@@ -6,26 +6,17 @@ import { CustomerProfile } from '../models/customer-profile.model';
 import { AddressForm } from '../models/address-form.model';
 import { AccountContactForm } from '../models/account-contact-form.model';
 import { Transaction, TransactionPage } from '../models/transaction.model';
+import { UpdateProfileRequest } from '../models/update-profile-request.model';
 import { environment } from '../../environments/environment';
 
 export type AccountTab = 'account' | 'change-password' | 'address' | 'contact' | 'stripe' | 'transactions';
-export type SignInMode = 'password' | 'forgot';
 
 export const TX_COLUMNS = ['created_at', 'currency', 'total_cents', 'stripe_fee_cents', 'tipper_fee_cents', 'net_cents'];
 
 export class AccountViewModel {
 session: AuthSession | null = null;
-isRecoveryMode = false;
 activeTab: AccountTab = 'account';
 profileNotFound = false;
-
-// Auth state
-signInMode: SignInMode = 'password';
-loginEmail = '';
-loginPassword = '';
-authError = '';
-authSuccess = '';
-authLoading = false;
 
 // Profile tab
 profile: CustomerProfile | null = null;
@@ -45,9 +36,6 @@ postal_code: '',
 country_iso2: '',
 subdivision_code: '',
 };
-addressError = '';
-addressSuccess = '';
-addressLoading = false;
 
 // Contact tab
 contactForm: AccountContactForm = {
@@ -56,9 +44,6 @@ last_name: '',
 phone: '',
 email: '',
 };
-contactError = '';
-contactSuccess = '';
-contactLoading = false;
 
 // Unified profile save
 profileSaveLoading = false;
@@ -74,6 +59,9 @@ selectedTabIndex = 0;
 
 // Transactions tab
 transactions: Transaction[] = [];
+get hasZeroStripeFee(): boolean {
+  return this.transactions.some(t => t.stripe_fee_cents === 0);
+}
 txHasMore = false;
 txNextCursor: string | null = null;
 txCursorStack: string[] = []; // stack of cursors for navigating back
@@ -85,96 +73,30 @@ txLoading = false;
 readonly txColumns = TX_COLUMNS;
 
 constructor(
-private auth: AuthService,
-private http: HttpClient,
-private logger: LoggingService,
+  private auth: AuthService,
+  private http: HttpClient,
+  private logger: LoggingService,
 ) {
-this.logger = logger.withTag('AccountViewModel');
+  this.logger = logger.withTag('AccountViewModel');
 }
 
 async init(): Promise<void> {
-this.session = this.auth.getSession();
+  this.session = this.auth.getSession();
 
-const hash = window.location.hash;
-if (hash.includes('type=recovery')) {
-this.isRecoveryMode = true;
-return;
-}
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('tab') === 'stripe') {
+    this.selectedTabIndex = 2;
+  }
 
-if (this.session) {
-await this.loadProfile();
-}
-
-this.auth.onAuthStateChange(async (session: AuthSession | null) => {
-const wasSignedIn = !!this.session;
-this.session = session;
-if (session && !wasSignedIn) {
-this.isRecoveryMode = false;
-await this.loadProfile();
-} else if (!session && wasSignedIn) {
-this.profile = null;
-this.profileNotFound = false;
-this.transactions = [];
-this.txHasMore = false;
-this.txNextCursor = null;
-this.txCursorStack = [];
-this.isRecoveryMode = false;
-}
-});
-}
-
-// ---- Auth ----
-
-async signInWithOAuth(provider: 'google' | 'apple' | 'facebook' | 'twitter'): Promise<void> {
-this.authError = '';
-this.authLoading = true;
-try {
-await this.auth.signInWithOAuth(provider);
-} finally {
-this.authLoading = false;
-}
-}
-
-async signInWithPassword(): Promise<void> {
-if (!this.loginEmail || !this.loginPassword) return;
-this.authError = '';
-this.authLoading = true;
-try {
-const err = await this.auth.signInWithPassword(this.loginEmail, this.loginPassword);
-if (err) {
-this.authError = err;
-} else {
-this.logger.checkDevMode(this.loginEmail);
-}
-} finally {
-this.authLoading = false;
-}
-}
-
-async sendForgotPassword(): Promise<void> {
-if (!this.loginEmail) {
-this.authError = 'Please enter your email address.';
-return;
-}
-this.authError = '';
-this.authLoading = true;
-try {
-const err = await this.auth.resetPasswordForEmail(this.loginEmail);
-if (err) {
-this.authError = err;
-} else {
-this.authSuccess = 'Password reset email sent. Check your inbox.';
-this.signInMode = 'password';
-}
-} finally {
-this.authLoading = false;
-}
+  if (this.session) {
+    await this.loadProfile();
+  }
 }
 
 async signOut(): Promise<void> {
-await this.auth.signOut();
-this.profile = null;
-this.session = null;
+  await this.auth.signOut();
+  this.profile = null;
+  this.session = null;
 }
 
 // ---- Password Change ----
@@ -199,7 +121,6 @@ this.passwordError = err;
 this.passwordSuccess = 'Password updated successfully.';
 this.newPassword = '';
 this.confirmPassword = '';
-this.isRecoveryMode = false;
 }
 } finally {
 this.passwordLoading = false;
@@ -217,14 +138,14 @@ this.http.get<{ customer_id: string }>(`${environment.tipperApiBase}/account/me`
 headers: this.authHeaders(),
 })
 );
-this.logger.d('loadProfile: /account/me response', JSON.stringify(me));
+this.logger.d(`loadProfile: /account/me response ${JSON.stringify(me)}`);
 const profile = await firstValueFrom(
 this.http.get<CustomerProfile>(
 `${environment.tipperApiBase}/account/profile?customer_id=${me.customer_id}`,
 { headers: this.authHeaders() }
 )
 );
-this.logger.d('loadProfile: /account/profile response', JSON.stringify(profile));
+this.logger.d(`loadProfile: /account/profile response ${JSON.stringify(profile)}`);
 this.profile = profile;
 if (profile.address) {
 this.addressForm = {
@@ -255,69 +176,42 @@ this.profileLoading = false;
 }
 }
 
-// ---- Address ----
-
-async saveAddress(): Promise<void> {
-if (!this.profile) return;
-this.addressError = '';
-this.addressSuccess = '';
-this.addressLoading = true;
-try {
-await firstValueFrom(
-this.http.patch(
-`${environment.tipperApiBase}/account/address`,
-{ customer_id: this.profile.customer_id, ...this.addressForm },
-{ headers: this.authHeaders() }
-)
-);
-this.addressSuccess = 'Address saved successfully.';
-await this.loadProfile();
-} catch (e: unknown) {
-this.addressError = this.extractError(e, 'Failed to save address.');
-this.logger.e('saveAddress failed', e);
-} finally {
-this.addressLoading = false;
-}
-}
-
-// ---- Contact ----
-
-async saveContact(): Promise<void> {
-if (!this.profile) return;
-this.contactError = '';
-this.contactSuccess = '';
-this.contactLoading = true;
-try {
-await firstValueFrom(
-this.http.patch(
-`${environment.tipperApiBase}/account/contact`,
-{ customer_id: this.profile.customer_id, ...this.contactForm },
-{ headers: this.authHeaders() }
-)
-);
-this.contactSuccess = 'Contact info saved successfully.';
-await this.loadProfile();
-} catch (e: unknown) {
-this.contactError = this.extractError(e, 'Failed to save contact info.');
-this.logger.e('saveContact failed', e);
-} finally {
-this.contactLoading = false;
-}
-}
+// ---- Profile Save ----
 
 async saveProfile(): Promise<void> {
-	this.profileSaveError = '';
-	this.profileSaveSuccess = '';
-	this.profileSaveLoading = true;
-	try {
-		await Promise.all([this.saveContact(), this.saveAddress()]);
-		if (!this.contactError && !this.addressError)
-			this.profileSaveSuccess = 'Profile saved successfully.';
-		else
-			this.profileSaveError = [this.contactError, this.addressError].filter(Boolean).join(' ');
-	} finally {
-		this.profileSaveLoading = false;
-	}
+if (!this.profile) return;
+this.profileSaveError = '';
+this.profileSaveSuccess = '';
+this.profileSaveLoading = true;
+try {
+const body: UpdateProfileRequest = {
+customer_id: this.profile.customer_id,
+first_name: this.contactForm.first_name ?? undefined,
+last_name: this.contactForm.last_name ?? undefined,
+phone: this.contactForm.phone ?? undefined,
+email: this.contactForm.email || undefined,
+address_line1: this.addressForm.line1 ?? undefined,
+address_line2: this.addressForm.line2 ?? undefined,
+address_city: this.addressForm.city ?? undefined,
+address_postal_code: this.addressForm.postal_code ?? undefined,
+address_country_iso2: this.addressForm.country_iso2 ?? undefined,
+address_subdivision_code: this.addressForm.subdivision_code ?? undefined,
+};
+await firstValueFrom(
+this.http.patch(
+`${environment.tipperApiBase}/account/profile`,
+body,
+{ headers: this.authHeaders() }
+)
+);
+this.profileSaveSuccess = 'Profile saved successfully.';
+await this.loadProfile();
+} catch (e: unknown) {
+this.profileSaveError = this.extractError(e, 'Failed to save profile.');
+this.logger.e('saveProfile failed', e);
+} finally {
+this.profileSaveLoading = false;
+}
 }
 
 // ---- Stripe ----
@@ -327,13 +221,19 @@ if (!this.profile) return;
 this.stripeError = '';
 this.stripeLoading = true;
 try {
+const accountPageUrl = `${window.location.origin}/account?tab=stripe`;
+const params = new URLSearchParams({
+  customer_id: this.profile.customer_id,
+  return_url: accountPageUrl,
+  refresh_url: accountPageUrl,
+});
 const resp = await firstValueFrom(
 this.http.get<{ url: string }>(
-`${environment.tipperApiBase}/stripe/express/account_link?customer_id=${this.profile.customer_id}`,
+`${environment.tipperApiBase}/stripe/express/account_link?${params.toString()}`,
 { headers: this.authHeaders() }
 )
 );
-window.open(resp.url, '_blank');
+window.location.href = resp.url;
 } catch (e: unknown) {
 this.stripeError = this.extractError(e, 'Could not load Stripe link. Please try again.');
 this.logger.e('openStripeOnboarding failed', e);
@@ -357,7 +257,7 @@ if (this.txToDate) url += `&to_date=${this.txToDate.toISOString().split('T')[0]}
 const resp = await firstValueFrom(
 this.http.get<TransactionPage>(url, { headers: this.authHeaders() })
 );
-this.logger.d('loadTransactions: response', `items=${resp.items.length} has_more=${resp.has_more} next_cursor=${resp.next_cursor} first=${JSON.stringify(resp.items[0] ?? null)}`);
+this.logger.d(`loadTransactions: response items=${resp.items.length} has_more=${resp.has_more} next_cursor=${resp.next_cursor} first=${JSON.stringify(resp.items[0] ?? null)}`);
 this.transactions = resp.items;
 this.txHasMore = resp.has_more;
 this.txNextCursor = resp.next_cursor ?? null;
@@ -427,5 +327,72 @@ return String((err as { detail: unknown }).detail);
 }
 }
 return fallback;
+}
+
+// ---- Input masking (mirrors Android StripeExpressViewModel) ----
+
+private formatPhone(input: string): string {
+const digits = input.replace(/\D/g, '').slice(0, 10);
+if (!digits) return '';
+let result = '(' + digits.slice(0, 3);
+if (digits.length > 3) result += ')' + digits.slice(3, 6);
+if (digits.length > 6) result += '-' + digits.slice(6);
+return result;
+}
+
+private formatPostal(input: string, iso2?: string): string {
+const country = (iso2 ?? '').toUpperCase();
+if (country === 'US') return input.replace(/\D/g, '').slice(0, 5);
+if (country === 'CA') {
+  const clean = input.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 6);
+  return clean.length > 3 ? clean.slice(0, 3) + '-' + clean.slice(3) : clean;
+}
+return input;
+}
+
+onPhoneChange(value: string): void {
+this.contactForm.phone = this.formatPhone(value);
+}
+
+onPostalChange(value: string): void {
+this.addressForm.postal_code = this.formatPostal(value, this.addressForm.country_iso2);
+}
+
+onPhoneInput(event: Event): void {
+const input = event.target as HTMLInputElement;
+const cursorPos = input.selectionStart ?? 0;
+const rawValue = input.value;
+const digitsBeforeCursor = rawValue.slice(0, cursorPos).replace(/\D/g, '').length;
+const formatted = this.formatPhone(rawValue);
+this.contactForm.phone = formatted;
+requestAnimationFrame(() => {
+  let pos = 0;
+  let digits = 0;
+  for (let i = 0; i < formatted.length; i++) {
+    if (digits === digitsBeforeCursor) { pos = i; break; }
+    if (/\d/.test(formatted[i])) digits++;
+    pos = i + 1;
+  }
+  input.setSelectionRange(pos, pos);
+});
+}
+
+onPostalInput(event: Event): void {
+const input = event.target as HTMLInputElement;
+const cursorPos = input.selectionStart ?? 0;
+const rawValue = input.value;
+const charsBeforeCursor = rawValue.slice(0, cursorPos).replace(/[^A-Za-z0-9]/g, '').length;
+const formatted = this.formatPostal(rawValue, this.addressForm.country_iso2);
+this.addressForm.postal_code = formatted;
+requestAnimationFrame(() => {
+  let pos = 0;
+  let chars = 0;
+  for (let i = 0; i < formatted.length; i++) {
+    if (chars === charsBeforeCursor) { pos = i; break; }
+    if (/[A-Za-z0-9]/.test(formatted[i])) chars++;
+    pos = i + 1;
+  }
+  input.setSelectionRange(pos, pos);
+});
 }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { AuthService } from './auth.service';
+import { LogEvent } from '../models/log-event.model';
 
 export enum LogLevel {
 	VERBOSE = 0,
@@ -12,17 +12,6 @@ export enum LogLevel {
 }
 
 const DEV_EMAILS = ['lrussow@gmail.com'];
-
-interface LogEventPayload {
-	timestamp: string;
-	level: string;
-	tag: string;
-	message: string;
-	throwable?: string;
-	app: Record<string, string>;
-	device: Record<string, string>;
-	context: Record<string, string>;
-}
 
 @Injectable({ providedIn: 'root' })
 export class LoggingService {
@@ -47,11 +36,10 @@ export class LoggingService {
 
 	constructor(
 		private readonly http: HttpClient,
-		private readonly auth: AuthService,
 	) {}
 
 	withTag(tag: string): LoggingService {
-		const child = new LoggingService(this.http, this.auth);
+		const child = new LoggingService(this.http);
 		child.tag = tag;
 		child.root = this;
 		return child;
@@ -61,12 +49,10 @@ export class LoggingService {
 		if (this.debugModeEnabled) return;
 		this.debugModeEnabled = true;
 		this.minLevel = LogLevel.DEBUG;
-		const token = this.auth.getAccessToken();
-		if (!token) return;
 		try {
 			await fetch(`${environment.tipperApiBase}/log-level`, {
 				method: 'PUT',
-				headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ level: 'DEBUG' }),
 			});
 		} catch { /* best-effort */ }
@@ -92,11 +78,24 @@ export class LoggingService {
 		this.log(LogLevel.ERROR, message, error);
 	}
 
-	/** Call after sign-in to enable debug mode for dev users. */
+	/** Call after sign-in to set the appropriate log level. */
 	checkDevMode(email: string): void {
 		if (DEV_EMAILS.includes(email.toLowerCase())) {
 			this.enableDebugMode();
+		} else {
+			this.setInfoMode();
 		}
+	}
+
+	async setInfoMode(): Promise<void> {
+		this.minLevel = LogLevel.INFO;
+		try {
+			await fetch(`${environment.tipperApiBase}/log-level`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ level: 'INFO' }),
+			});
+		} catch { /* best-effort */ }
 	}
 
 	private log(level: LogLevel, message: string, error?: unknown): void {
@@ -121,7 +120,7 @@ export class LoggingService {
 				break;
 		}
 
-		this.postAsync(LogLevel[level], sanitized, error);
+		this.postAsync(LogLevel[level], sanitized, level === LogLevel.ERROR ? error : undefined);
 	}
 
 	private serializeError(error: unknown): string {
@@ -139,7 +138,7 @@ export class LoggingService {
 	}
 
 	private postAsync(level: string, message: string, error?: unknown): void {
-		const payload: LogEventPayload = {
+		const payload: LogEvent = {
 			timestamp: new Date().toISOString(),
 			level,
 			tag: this.tag,

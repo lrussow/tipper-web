@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -41,12 +42,23 @@ constructor(
 private auth: AuthService,
 private http: HttpClient,
 private logging: LoggingService,
+private router: Router,
 ) {
 this.vm = new AccountViewModel(auth, http, logging);
 }
 
 async ngOnInit(): Promise<void> {
+await this.auth.ready;
+if (!this.auth.getSession()) {
+  await this.router.navigate(['/login']);
+  return;
+}
 await this.vm.init();
+this.auth.onAuthStateChange(async session => {
+  if (!session) {
+    await this.router.navigate(['/login']);
+  }
+});
 }
 
 async onTabChange(index: number): Promise<void> {

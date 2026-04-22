@@ -1,88 +1,9 @@
 <div class="account-page">
 
   <!-- ============================================================ -->
-  <!-- Recovery Mode (password reset link from email)              -->
+  <!-- Account Dashboard                                            -->
   <!-- ============================================================ -->
-  @if (vm.isRecoveryMode) {
-    <div class="auth-card">
-      <h2 class="auth-title">Set New Password</h2>
-      @if (vm.passwordError) {
-        <p class="form-error" id="account-password-error">{{ vm.passwordError }}</p>
-      }
-      @if (vm.passwordSuccess) {
-        <p class="form-success" id="account-password-success">{{ vm.passwordSuccess }}</p>
-      }
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>New Password</mat-label>
-        <input id="recovery-new-password" matInput type="password" placeholder="New password" [(ngModel)]="vm.newPassword" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Confirm Password</mat-label>
-        <input id="recovery-confirm-password" matInput type="password" placeholder="Confirm new password" [(ngModel)]="vm.confirmPassword" />
-      </mat-form-field>
-      <button id="account-set-password-btn" mat-raised-button color="primary" [disabled]="vm.passwordLoading" (click)="vm.changePassword()">
-        @if (vm.passwordLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Set Password }
-      </button>
-    </div>
-  }
-
-  <!-- ============================================================ -->
-  <!-- Unauthenticated: Sign-In Panel                               -->
-  <!-- ============================================================ -->
-  @else if (!vm.session) {
-    <div class="auth-card">
-      <h2 class="auth-title">Sign In to Your Account</h2>
-
-      @if (vm.authError) {
-        <p class="form-error" id="account-auth-error">{{ vm.authError }}</p>
-      }
-      @if (vm.authSuccess) {
-        <p class="form-success" id="account-auth-success">{{ vm.authSuccess }}</p>
-      }
-
-      <!-- Email / Password Form -->
-      @if (vm.signInMode === 'password') {
-        <div class="email-signin">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Email</mat-label>
-            <input id="account-email" matInput type="email" [(ngModel)]="vm.loginEmail" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Password</mat-label>
-            <input id="account-password" matInput type="password" placeholder="Password" [(ngModel)]="vm.loginPassword" />
-          </mat-form-field>
-          <button id="account-signin-btn" mat-raised-button color="primary" [disabled]="vm.authLoading" (click)="vm.signInWithPassword()">
-            @if (vm.authLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Sign In }
-          </button>
-          <button id="account-forgot-link" class="link-btn" (click)="vm.signInMode = 'forgot'">
-            Forgot password?
-          </button>
-        </div>
-      }
-
-      <!-- Forgot Password Form -->
-      @if (vm.signInMode === 'forgot') {
-        <div class="email-signin">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Email</mat-label>
-            <input id="account-forgot-email" matInput type="email" [(ngModel)]="vm.loginEmail" />
-          </mat-form-field>
-          <button id="account-reset-btn" mat-raised-button color="primary" [disabled]="vm.authLoading" (click)="vm.sendForgotPassword()">
-            @if (vm.authLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Send Reset Email }
-          </button>
-          <button id="account-back-link" class="link-btn" (click)="vm.signInMode = 'password'">
-            ← Back to sign in
-          </button>
-        </div>
-      }
-    </div>
-  }
-
-  <!-- ============================================================ -->
-  <!-- Authenticated: Account Dashboard                             -->
-  <!-- ============================================================ -->
-  @else {
-    <div class="account-dashboard">
+  <div class="account-dashboard">
 
       @if (vm.profileLoading) {
         <div class="loading-wrap">
@@ -94,58 +15,71 @@
           <!-- ---- Profile Tab (Contact + Address) ---- -->
           <mat-tab label="Profile">
             <div class="tab-content">
-              <p class="section-heading">Contact Info</p>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>First Name</mat-label>
-                <input id="contact-first-name" matInput placeholder="First name" [(ngModel)]="vm.contactForm.first_name" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Last Name</mat-label>
-                <input id="contact-last-name" matInput placeholder="Last name" [(ngModel)]="vm.contactForm.last_name" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Phone</mat-label>
-                <input id="contact-phone" matInput type="tel" placeholder="+1 555 000 0000" [(ngModel)]="vm.contactForm.phone" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Email</mat-label>
-                <input id="contact-email" matInput type="email" [(ngModel)]="vm.contactForm.email" />
-              </mat-form-field>
+              <form #profileForm="ngForm">
+                <p class="section-heading">Contact Info</p>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>First Name</mat-label>
+                  <input id="contact-first-name" name="first_name" matInput placeholder="First name" required [(ngModel)]="vm.contactForm.first_name" />
+                  <mat-error>First name is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Last Name</mat-label>
+                  <input id="contact-last-name" name="last_name" matInput placeholder="Last name" required [(ngModel)]="vm.contactForm.last_name" />
+                  <mat-error>Last name is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Phone</mat-label>
+                  <input id="contact-phone" name="phone" matInput type="tel" placeholder="(416)555-0123" required pattern="\(\d{3}\)\d{3}-\d{4}" #phoneInput="ngModel" [ngModel]="vm.contactForm.phone" (input)="vm.onPhoneInput($event)" />
+                  <mat-error *ngIf="phoneInput.hasError('required')">Phone is required</mat-error>
+                  <mat-error *ngIf="phoneInput.hasError('pattern')">Enter phone as (XXX)XXX-XXXX</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Email</mat-label>
+                  <input id="contact-email" name="email" matInput type="email" required [(ngModel)]="vm.contactForm.email" />
+                  <mat-error>Email is required</mat-error>
+                </mat-form-field>
 
-              <p class="section-heading">Address</p>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Address Line 1</mat-label>
-                <input id="address-line1" matInput placeholder="123 Main St" [(ngModel)]="vm.addressForm.line1" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Address Line 2</mat-label>
-                <input id="address-line2" matInput placeholder="Suite 100" [(ngModel)]="vm.addressForm.line2" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>City</mat-label>
-                <input id="address-city" matInput placeholder="City" [(ngModel)]="vm.addressForm.city" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Postal / ZIP Code</mat-label>
-                <input id="address-postal" matInput placeholder="Postal Code" [(ngModel)]="vm.addressForm.postal_code" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Country (ISO2)</mat-label>
-                <input id="address-country" matInput placeholder="e.g. CA or US" [(ngModel)]="vm.addressForm.country_iso2" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Province / State Code</mat-label>
-                <input id="address-state" matInput placeholder="e.g. ON or NY" [(ngModel)]="vm.addressForm.subdivision_code" />
-              </mat-form-field>
-              <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.profileSaveLoading" (click)="vm.saveProfile()">
-                @if (vm.profileSaveLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Profile }
-              </button>
-              @if (vm.profileSaveError) {
-                <p class="form-error" id="account-profile-save-error">{{ vm.profileSaveError }}</p>
-              }
-              @if (vm.profileSaveSuccess) {
-                <p class="form-success" id="account-profile-save-success">{{ vm.profileSaveSuccess }}</p>
-              }
+                <p class="section-heading">Address</p>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Address Line 1</mat-label>
+                  <input id="address-line1" name="address_line1" matInput placeholder="123 Main St" required [(ngModel)]="vm.addressForm.line1" />
+                  <mat-error>Address line 1 is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Address Line 2</mat-label>
+                  <input id="address-line2" name="address_line2" matInput placeholder="Suite 100" [(ngModel)]="vm.addressForm.line2" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>City</mat-label>
+                  <input id="address-city" name="address_city" matInput placeholder="City" required [(ngModel)]="vm.addressForm.city" />
+                  <mat-error>City is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Postal / ZIP Code</mat-label>
+                  <input id="address-postal" name="address_postal_code" matInput placeholder="12345 or A1A-1A1" required pattern="\d{5}|[A-Za-z]\d[A-Za-z]-\d[A-Za-z]\d" #postalInput="ngModel" [ngModel]="vm.addressForm.postal_code" (input)="vm.onPostalInput($event)" />
+                  <mat-error *ngIf="postalInput.hasError('required')">Postal code is required</mat-error>
+                  <mat-error *ngIf="postalInput.hasError('pattern')">US: 5 digits (12345) · CA: A1A-1A1</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Country (ISO2)</mat-label>
+                  <input id="address-country" name="address_country_iso2" matInput placeholder="e.g. CA or US" required [(ngModel)]="vm.addressForm.country_iso2" />
+                  <mat-error>Country is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Province / State Code</mat-label>
+                  <input id="address-state" name="address_subdivision_code" matInput placeholder="e.g. ON or NY" required [(ngModel)]="vm.addressForm.subdivision_code" />
+                  <mat-error>Province / State is required</mat-error>
+                </mat-form-field>
+                <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.profileSaveLoading || profileForm.invalid" (click)="vm.saveProfile()">
+                  @if (vm.profileSaveLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Profile }
+                </button>
+                @if (vm.profileSaveError) {
+                  <p class="form-error" id="account-profile-save-error">{{ vm.profileSaveError }}</p>
+                }
+                @if (vm.profileSaveSuccess) {
+                  <p class="form-success" id="account-profile-save-success">{{ vm.profileSaveSuccess }}</p>
+                }
+              </form>
             </div>
           </mat-tab>
 
@@ -213,6 +147,10 @@
                   <button id="account-tx-prev" class="tx-page-btn" [disabled]="vm.txCursorStack.length === 0 || vm.txLoading" (click)="vm.loadPrevPage()">← Prev</button>
                   <button id="account-tx-next" class="tx-page-btn" [disabled]="!vm.txHasMore || vm.txLoading" (click)="vm.loadNextPage()">Next →</button>
                 </div>
+
+                @if (vm.hasZeroStripeFee) {
+                  <p class="tx-fee-note">* A Stripe fee of $0.00 means the fee has not yet been calculated for that transaction.</p>
+                }
               }
             </div>
           </mat-tab>
@@ -278,6 +216,5 @@
         </mat-tab-group>
       }
     </div>
-  }
 
 </div>

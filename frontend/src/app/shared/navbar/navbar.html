@@ -18,7 +18,7 @@
       <a id="nav-contact" routerLink="/contact" routerLinkActive="active">Contact</a>
     </li>
     <li>
-      <a id="nav-account" routerLink="/account" routerLinkActive="active">Account</a>
+      <a id="nav-account" [routerLink]="isSignedIn ? '/account' : '/login'" routerLinkActive="active">Account</a>
     </li>
     @if (isSignedIn) {
       <li>

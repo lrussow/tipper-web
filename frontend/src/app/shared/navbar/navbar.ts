@@ -9,7 +9,6 @@ import { AuthService } from '../../services/auth.service';
 	standalone: true,
 	imports: [RouterLink, RouterLinkActive, CommonModule],
 	templateUrl: './navbar.html',
-	styleUrl: './navbar.scss',
 })
 export class Navbar implements OnInit, OnDestroy {
 	menuOpen = false;

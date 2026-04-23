@@ -40,30 +40,12 @@
         <p class="form-success" id="account-auth-success">{{ vm.authSuccess }}</p>
       }
 
-      <!-- OAuth Buttons -->
-      <div class="oauth-buttons">
-        <button id="account-signin-google" class="oauth-btn oauth-google" (click)="vm.signInWithOAuth('google')" [disabled]="vm.authLoading">
-          <img src="assets/oauth/google.svg" alt="" class="oauth-icon" /> Continue with Google
-        </button>
-        <button id="account-signin-apple" class="oauth-btn oauth-apple" (click)="vm.signInWithOAuth('apple')" [disabled]="vm.authLoading">
-          <img src="assets/oauth/apple.svg" alt="" class="oauth-icon" /> Continue with Apple
-        </button>
-        <button id="account-signin-facebook" class="oauth-btn oauth-facebook" (click)="vm.signInWithOAuth('facebook')" [disabled]="vm.authLoading">
-          <img src="assets/oauth/facebook.svg" alt="" class="oauth-icon" /> Continue with Facebook
-        </button>
-        <button id="account-signin-twitter" class="oauth-btn oauth-twitter" (click)="vm.signInWithOAuth('twitter')" [disabled]="vm.authLoading">
-          <img src="assets/oauth/twitter.svg" alt="" class="oauth-icon" /> Continue with X / Twitter
-        </button>
-      </div>
-
-      <div class="divider"><span>or</span></div>
-
       <!-- Email / Password Form -->
       @if (vm.signInMode === 'password') {
         <div class="email-signin">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
-            <input id="account-email" matInput type="email" placeholder="you@example.com" [(ngModel)]="vm.loginEmail" />
+            <input id="account-email" matInput type="email" [(ngModel)]="vm.loginEmail" />
           </mat-form-field>
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Password</mat-label>
@@ -83,7 +65,7 @@
         <div class="email-signin">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
-            <input id="account-forgot-email" matInput type="email" placeholder="you@example.com" [(ngModel)]="vm.loginEmail" />
+            <input id="account-forgot-email" matInput type="email" [(ngModel)]="vm.loginEmail" />
           </mat-form-field>
           <button id="account-reset-btn" mat-raised-button color="primary" [disabled]="vm.authLoading" (click)="vm.sendForgotPassword()">
             @if (vm.authLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Send Reset Email }
@@ -101,54 +83,36 @@
   <!-- ============================================================ -->
   @else {
     <div class="account-dashboard">
-      <div class="dashboard-header">
-        <h1 class="dashboard-title">My Account</h1>
-        <button id="account-signout-btn" mat-stroked-button (click)="vm.signOut()">Sign Out</button>
-      </div>
 
       @if (vm.profileLoading) {
         <div class="loading-wrap">
           <mat-spinner id="account-loading" diameter="48"></mat-spinner>
         </div>
       } @else {
-        <mat-tab-group id="account-tab-panel" animationDuration="200ms">
+        <mat-tab-group id="account-tab-panel" animationDuration="200ms" [selectedIndex]="vm.selectedTabIndex" (selectedTabChange)="onTabChange($event.index)">
 
-          <!-- ---- Profile Tab ---- -->
+          <!-- ---- Profile Tab (Contact + Address) ---- -->
           <mat-tab label="Profile">
             <div class="tab-content">
-              @if (vm.profile) {
-                <p class="profile-email" id="account-profile-email">{{ vm.profile.email }}</p>
-              }
-              <h3 class="section-heading">Change Password</h3>
-              @if (vm.passwordError) {
-                <p class="form-error" id="account-change-password-error">{{ vm.passwordError }}</p>
-              }
-              @if (vm.passwordSuccess) {
-                <p class="form-success" id="account-change-password-success">{{ vm.passwordSuccess }}</p>
-              }
+              <p class="section-heading">Contact Info</p>
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>New Password</mat-label>
-                <input id="profile-new-password" matInput type="password" placeholder="New password" [(ngModel)]="vm.newPassword" />
+                <mat-label>First Name</mat-label>
+                <input id="contact-first-name" matInput placeholder="First name" [(ngModel)]="vm.contactForm.first_name" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Confirm Password</mat-label>
-                <input id="profile-confirm-password" matInput type="password" placeholder="Confirm new password" [(ngModel)]="vm.confirmPassword" />
+                <mat-label>Last Name</mat-label>
+                <input id="contact-last-name" matInput placeholder="Last name" [(ngModel)]="vm.contactForm.last_name" />
               </mat-form-field>
-              <button id="account-change-password-btn" mat-raised-button color="primary" [disabled]="vm.passwordLoading" (click)="vm.changePassword()">
-                @if (vm.passwordLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Change Password }
-              </button>
-            </div>
-          </mat-tab>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Phone</mat-label>
+                <input id="contact-phone" matInput type="tel" placeholder="+1 555 000 0000" [(ngModel)]="vm.contactForm.phone" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Email</mat-label>
+                <input id="contact-email" matInput type="email" [(ngModel)]="vm.contactForm.email" />
+              </mat-form-field>
 
-          <!-- ---- Address Tab ---- -->
-          <mat-tab label="Address">
-            <div class="tab-content">
-              @if (vm.addressError) {
-                <p class="form-error" id="account-address-error">{{ vm.addressError }}</p>
-              }
-              @if (vm.addressSuccess) {
-                <p class="form-success" id="account-address-success">{{ vm.addressSuccess }}</p>
-              }
+              <p class="section-heading">Address</p>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Address Line 1</mat-label>
                 <input id="address-line1" matInput placeholder="123 Main St" [(ngModel)]="vm.addressForm.line1" />
@@ -173,9 +137,83 @@
                 <mat-label>Province / State Code</mat-label>
                 <input id="address-state" matInput placeholder="e.g. ON or NY" [(ngModel)]="vm.addressForm.subdivision_code" />
               </mat-form-field>
-              <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.addressLoading" (click)="vm.saveAddress()">
-                @if (vm.addressLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Address }
+              <button id="account-save-address-btn" mat-raised-button color="primary" [disabled]="vm.profileSaveLoading" (click)="vm.saveProfile()">
+                @if (vm.profileSaveLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Save Profile }
               </button>
+              @if (vm.profileSaveError) {
+                <p class="form-error" id="account-profile-save-error">{{ vm.profileSaveError }}</p>
+              }
+              @if (vm.profileSaveSuccess) {
+                <p class="form-success" id="account-profile-save-success">{{ vm.profileSaveSuccess }}</p>
+              }
+            </div>
+          </mat-tab>
+
+          <!-- ---- Transactions Tab ---- -->
+          <mat-tab label="Transactions">
+            <div class="tab-content">
+              <div class="tx-filters">
+                <mat-form-field appearance="outline" class="tx-date-field">
+                  <mat-label>From</mat-label>
+                  <input id="tx-from-date" matInput [matDatepicker]="fromPicker" [(ngModel)]="vm.txFromDate" (dateChange)="vm.onDateFilterChange()" />
+                  <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #fromPicker></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="tx-date-field">
+                  <mat-label>To</mat-label>
+                  <input id="tx-to-date" matInput [matDatepicker]="toPicker" [(ngModel)]="vm.txToDate" (dateChange)="vm.onDateFilterChange()" />
+                  <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #toPicker></mat-datepicker>
+                </mat-form-field>
+                <button id="account-tx-refresh" class="tx-refresh-btn" [disabled]="vm.txLoading" (click)="vm.refreshTransactions()">↻ Refresh</button>
+              </div>
+
+              @if (vm.transactionError) {
+                <p class="form-error" id="account-tx-error">{{ vm.transactionError }}</p>
+              }
+
+              @if (vm.txLoading) {
+                <div class="loading-wrap"><mat-spinner diameter="36"></mat-spinner></div>
+              } @else {
+                <table id="account-transaction-grid" mat-table [dataSource]="vm.transactions" class="tx-table">
+                  <ng-container matColumnDef="created_at">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let row">{{ row.created_at | date:'short' }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="currency">
+                    <th mat-header-cell *matHeaderCellDef>Currency</th>
+                    <td mat-cell *matCellDef="let row">{{ row.currency }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="total_cents">
+                    <th mat-header-cell *matHeaderCellDef>Total</th>
+                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.total_cents, row.currency) }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="stripe_fee_cents">
+                    <th mat-header-cell *matHeaderCellDef>Stripe Fee</th>
+                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.stripe_fee_cents, row.currency) }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="tipper_fee_cents">
+                    <th mat-header-cell *matHeaderCellDef>Tipper Fee</th>
+                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.tipper_fee_cents, row.currency) }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="net_cents">
+                    <th mat-header-cell *matHeaderCellDef>Net</th>
+                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.net_cents, row.currency) }}</td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="vm.txColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: vm.txColumns;"></tr>
+
+                  <tr class="mat-row no-data-row" *matNoDataRow>
+                    <td class="mat-cell" [attr.colspan]="vm.txColumns.length">No transactions found.</td>
+                  </tr>
+                </table>
+
+                <div class="tx-pagination">
+                  <button id="account-tx-prev" class="tx-page-btn" [disabled]="vm.txCursorStack.length === 0 || vm.txLoading" (click)="vm.loadPrevPage()">← Prev</button>
+                  <button id="account-tx-next" class="tx-page-btn" [disabled]="!vm.txHasMore || vm.txLoading" (click)="vm.loadNextPage()">Next →</button>
+                </div>
+              }
             </div>
           </mat-tab>
 
@@ -214,75 +252,26 @@
             </div>
           </mat-tab>
 
-          <!-- ---- Transactions Tab ---- -->
-          <mat-tab label="Transactions">
+          <!-- ---- Change Password Tab ---- -->
+          <mat-tab label="Change Password">
             <div class="tab-content">
-              <div class="tx-filters">
-                <mat-form-field appearance="outline" class="tx-date-field">
-                  <mat-label>From</mat-label>
-                  <input id="tx-from-date" matInput [matDatepicker]="fromPicker" [(ngModel)]="vm.txFromDate" (dateChange)="vm.onDateFilterChange()" />
-                  <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
-                  <mat-datepicker #fromPicker></mat-datepicker>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="tx-date-field">
-                  <mat-label>To</mat-label>
-                  <input id="tx-to-date" matInput [matDatepicker]="toPicker" [(ngModel)]="vm.txToDate" (dateChange)="vm.onDateFilterChange()" />
-                  <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
-                  <mat-datepicker #toPicker></mat-datepicker>
-                </mat-form-field>
-              </div>
-
-              @if (vm.transactionError) {
-                <p class="form-error" id="account-tx-error">{{ vm.transactionError }}</p>
+              @if (vm.passwordError) {
+                <p class="form-error" id="account-change-password-error">{{ vm.passwordError }}</p>
               }
-
-              @if (vm.txLoading) {
-                <div class="loading-wrap"><mat-spinner diameter="36"></mat-spinner></div>
-              } @else {
-                <table id="account-transaction-grid" mat-table [dataSource]="vm.transactions" class="tx-table">
-                  <ng-container matColumnDef="created_at">
-                    <th mat-header-cell *matHeaderCellDef>Date</th>
-                    <td mat-cell *matCellDef="let row">{{ row.created_at | date:'short' }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="currency">
-                    <th mat-header-cell *matHeaderCellDef>Currency</th>
-                    <td mat-cell *matCellDef="let row">{{ row.currency }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="total_cents">
-                    <th mat-header-cell *matHeaderCellDef>Total</th>
-                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.total_cents, row.currency) }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="provider_fee_cents">
-                    <th mat-header-cell *matHeaderCellDef>Provider Fee</th>
-                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.provider_fee_cents, row.currency) }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="tipper_fee_cents">
-                    <th mat-header-cell *matHeaderCellDef>Tipper Fee</th>
-                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.tipper_fee_cents, row.currency) }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="net_cents">
-                    <th mat-header-cell *matHeaderCellDef>Net</th>
-                    <td mat-cell *matCellDef="let row">{{ vm.formatCents(row.net_cents, row.currency) }}</td>
-                  </ng-container>
-
-                  <tr mat-header-row *matHeaderRowDef="vm.txColumns"></tr>
-                  <tr mat-row *matRowDef="let row; columns: vm.txColumns;"></tr>
-
-                  <tr class="mat-row no-data-row" *matNoDataRow>
-                    <td class="mat-cell" [attr.colspan]="vm.txColumns.length">No transactions found.</td>
-                  </tr>
-                </table>
-
-                <mat-paginator
-                  id="account-tx-paginator"
-                  [length]="vm.txTotalCount"
-                  [pageSize]="vm.txPageSize"
-                  [pageIndex]="vm.txPageIndex"
-                  [pageSizeOptions]="[10, 20, 50]"
-                  showFirstLastButtons
-                  (page)="onPageChange($event)">
-                </mat-paginator>
+              @if (vm.passwordSuccess) {
+                <p class="form-success" id="account-change-password-success">{{ vm.passwordSuccess }}</p>
               }
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>New Password</mat-label>
+                <input id="profile-new-password" matInput type="password" placeholder="New password" [(ngModel)]="vm.newPassword" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Confirm Password</mat-label>
+                <input id="profile-confirm-password" matInput type="password" placeholder="Confirm new password" [(ngModel)]="vm.confirmPassword" />
+              </mat-form-field>
+              <button id="account-change-password-btn" mat-raised-button color="primary" [disabled]="vm.passwordLoading" (click)="vm.changePassword()">
+                @if (vm.passwordLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Change Password }
+              </button>
             </div>
           </mat-tab>
 

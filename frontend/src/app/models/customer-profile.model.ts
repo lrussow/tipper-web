@@ -10,6 +10,9 @@ export interface AddressDto {
 export interface CustomerProfile {
 	customer_id: string;
 	email: string;
+	first_name: string | null;
+	last_name: string | null;
+	phone: string | null;
 	stripe_onboarding_complete: boolean;
 	stripe_charges_enabled: boolean;
 	stripe_payouts_enabled: boolean;

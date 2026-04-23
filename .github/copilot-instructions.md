@@ -1,5 +1,13 @@
 # Copilot Instructions — tipper-web
 
+## Workflow
+
+- **Always commit and push after completing each task.** Once changes are verified, stage all modified files, write a descriptive commit message (with the `Co-authored-by: Copilot` trailer), and push to the current branch. Do not wait for the user to ask.
+- **Review and update these instructions after every task completion.** If any new conventions, architecture decisions, or repo facts were established during the task, add them here before marking the task complete.
+- **No raw Promises or `.then()` chains.** Always use `async`/`await`. The only exception is Angular lazy-load routes which use `async () => (await import(...)).Component` — this is still `await`, not `.then()`.
+
+---
+
 ## Project Overview
 
 **tipper-web** is the marketing website for **The Tipper™ by Tip & Tap** — a contactless tipping app powered by Stripe. It spans two repositories:
@@ -40,7 +48,16 @@ tipper-web/             ← THIS REPO (frontend only)
 thetipper-backend/      ← SEPARATE REPO at C:\src\thetipper-backend
 └── app/
     └── main.py            ← FastAPI app (all API routes live here)
+
+Tipper/                 ← SEPARATE REPO at C:\src\Tipper (mobile app — Kotlin Multiplatform)
+└── shared/src/
+    ├── commonMain/        ← shared interfaces (IAuthService, etc.)
+    └── iosMain/           ← iOS implementations (IosAuthService, etc.)
 ```
+
+> **Mobile auth note:** The mobile app (`C:\src\Tipper`) uses the **Supabase Kotlin SDK directly** for all auth — it calls Supabase, not the FastAPI backend, for sign-in/sign-out/token refresh. Changes to the backend's `/auth/refresh` cookie flow, `withCredentials`, or HttpOnly cookies have **no effect on the mobile app**.
+
+> **Database schema:** Always consult `C:\src\Tipper\sql\` for the authoritative Supabase table definitions before writing or modifying any backend queries. Migration scripts are in `C:\src\Tipper\sql\2026_1\` — run these to understand column renames, table restructures, or FK changes that may not be reflected in the base `*.sql` files.
 
 ---
 
@@ -126,6 +143,8 @@ export class HomeComponent implements OnInit {
 - **No `any` type** — use explicit types or `unknown`
 - **`const` over `let`** when never reassigned
 - **Colors / palette**: Primary `#4e5e8b`, dark background `#1a1a2e`
+- **Logging**: Use `LoggingService` (`frontend/src/app/services/logging.service.ts`) — never `console.log/warn/error`. All ViewModels receive `LoggingService` via constructor and create a tagged child logger: `private log = this.logger.withTag('MyViewModel')`. The service has built-in level guards; calls below `minLevel` are no-ops with no backend posting. Debug mode auto-enables for `lrussow@gmail.com`.
+  - `LoggingService` is `@Injectable({ providedIn: 'root' })` — **do not** put `tag` in the constructor (breaks Angular DI). Use `withTag()` after construction.
 
 ---
 
@@ -151,6 +170,10 @@ export class HomeComponent implements OnInit {
 - CORS enabled for `http://localhost:4200` (dev)
 - Use `async def` for all route handlers
 - Never commit `.env` with real credentials — use `.env.example`
+- **Account provisioning:** `GET /account/me` is **read-only** — it looks up `emails` and `customers` by the JWT email claim using `user_client` (so RLS applies). Never INSERT from this endpoint.
+- **CORS + exceptions:** All unhandled exceptions must return a `JSONResponse` via `@app.exception_handler(Exception)` so CORS headers are always present. Never let raw Python exceptions bypass middleware.
+- **Supabase client choice:** Always use `user_client` (the user's authenticated JWT client, from `Depends(get_user_client)`) for queries on RLS-protected tables (`customers`, `stripe_accounts`, etc.). Do **not** use `supabase_admin` for these — even though the service role bypasses RLS in theory, PostgREST embedded-resource joins (e.g. `stripe_accounts!stripe_account_id(...)`) silently return `null` for the joined resource when using the admin client. Reserve `supabase_admin` for operations that genuinely require elevated access (writes to `emails`, Supabase Auth admin calls, RPC decryption).
+- **PostgREST join hint syntax:** Use the FK column name, not the constraint name: `stripe_accounts!stripe_account_id(...)` ✅ — not `stripe_accounts!customers_stripe_account_id_fkey(...)` ❌. The constraint-name form silently fails in practice.
 
 ---
 

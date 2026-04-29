@@ -1,0 +1,19 @@
+:host { display: block; }
+
+.download-hero {
+	padding: 3rem 1rem;
+	text-align: center;
+}
+
+.download-buttons {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	margin-top: 1.25rem;
+}
+
+.btn { padding: 0.75rem 1.25rem; border-radius: 6px; }
+.btn-outline { background: transparent; border: 2px solid #4e5e8b; color: #4e5e8b; }
+.btn-primary { background: #4e5e8b; color: #fff; border: none; }
+
+.note { margin-top: 0.75rem; color: #666; }

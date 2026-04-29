@@ -1,0 +1,13 @@
+<section class="download-hero">
+	<div class="container">
+		<h1>{{ vm.headline }}</h1>
+		<p class="subheadline">{{ vm.subheadline }}</p>
+
+		<div class="download-buttons">
+			<a id="download-ios" class="btn btn-primary" [href]="vm.iosUrl" target="_blank" (click)="vm.trackClick('ios')">Download on the App Store</a>
+			<a id="download-play" class="btn btn-outline" [href]="vm.playUrl" target="_blank" (click)="vm.trackClick('play')">Get it on Google Play</a>
+		</div>
+
+		<p class="note">Links are placeholders until store URLs are provided.</p>
+	</div>
+</section>

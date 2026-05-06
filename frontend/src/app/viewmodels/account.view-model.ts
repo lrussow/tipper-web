@@ -159,7 +159,7 @@ return;
 this.authError = '';
 this.authLoading = true;
 try {
-const err = await this.auth.resetPasswordForEmail(this.loginEmail);
+const err = await this.auth.resetPasswordForEmail(this.loginEmail, `${window.location.origin}/account?tab=password`);
 if (err) {
 this.authError = err;
 } else {

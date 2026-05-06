@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -14,6 +15,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 import { LoggingService } from '../../services/logging.service';
 import { AccountViewModel } from '../../viewmodels/account.view-model';
+
+const TAB_NAME_TO_INDEX: Record<string, number> = {
+	profile: 0,
+	transactions: 1,
+	stripe: 2,
+	password: 3,
+};
 
 @Component({
 selector: 'app-account',
@@ -41,12 +49,17 @@ constructor(
 private auth: AuthService,
 private http: HttpClient,
 private logging: LoggingService,
+private route: ActivatedRoute,
 ) {
 this.vm = new AccountViewModel(auth, http, logging);
 }
 
 async ngOnInit(): Promise<void> {
-await this.vm.init();
+	const tab = this.route.snapshot.queryParamMap.get('tab');
+	if (tab && tab in TAB_NAME_TO_INDEX) {
+		this.vm.selectedTabIndex = TAB_NAME_TO_INDEX[tab];
+	}
+	await this.vm.init();
 }
 
 async onTabChange(index: number): Promise<void> {

@@ -1,0 +1,31 @@
+<section class="confirm-hero">
+	<div class="container">
+		<div class="checkmark-circle" aria-hidden="true">✓</div>
+		<h1>{{ vm.headline }}</h1>
+		<p class="subheadline">{{ vm.subheadline }}</p>
+	</div>
+</section>
+
+<section class="next-steps">
+	<div class="container">
+		<h2>What's Next?</h2>
+		<div class="steps-grid">
+			@for (step of vm.steps; track step.title) {
+				<div class="step-card">
+					<span class="step-icon">{{ step.icon }}</span>
+					<h3>{{ step.title }}</h3>
+					<p>{{ step.desc }}</p>
+				</div>
+			}
+		</div>
+
+		<div class="cta-block">
+			<a id="confirm-download" [routerLink]="vm.downloadUrl" class="btn btn-primary btn-lg">
+				Download the App
+			</a>
+			<a id="confirm-home" routerLink="/" class="btn btn-outline btn-lg">
+				Back to Home
+			</a>
+		</div>
+	</div>
+</section>

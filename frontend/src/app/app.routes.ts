@@ -7,5 +7,6 @@ export const routes: Routes = [
 	{ path: 'contact', component: Contact },
 	{ path: 'download', loadComponent: async () => (await import('./pages/download/download')).Download },
 	{ path: 'account', loadComponent: async () => (await import('./pages/account/account')).Account },
+	{ path: 'confirm', loadComponent: async () => (await import('./pages/confirm/confirm')).Confirm },
 	{ path: '**', redirectTo: '' },
 ];

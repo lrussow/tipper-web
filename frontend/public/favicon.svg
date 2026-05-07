@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <clipPath id="bg-clip">
+      <rect width="32" height="32" rx="6" ry="6"/>
+    </clipPath>
+  </defs>
+  <!-- Dark-blue rounded-square background -->
+  <rect width="32" height="32" rx="6" ry="6" fill="#0042a9"/>
+  <!-- Left circle — sky blue -->
+  <circle cx="12.5" cy="16" r="8.5" fill="#5ac4f6" fill-opacity="0.82" clip-path="url(#bg-clip)"/>
+  <!-- Right circle — light blue, semi-transparent -->
+  <circle cx="20.5" cy="16" r="8.5" fill="#93e3fd" fill-opacity="0.52" clip-path="url(#bg-clip)"/>
+  <!-- Bold white T, centred -->
+  <text x="16" y="23"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-weight="800"
+        font-size="20"
+        text-anchor="middle"
+        fill="white">T</text>
+</svg>

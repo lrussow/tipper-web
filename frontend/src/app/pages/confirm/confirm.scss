@@ -3,7 +3,7 @@
 .confirm-hero {
 	padding: 4rem 1rem 3rem;
 	text-align: center;
-	background: linear-gradient(160deg, #0042a9 0%, #1a6ed8 100%);
+	background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
 	color: #fff;
 
 	h1 { font-size: 2rem; margin: 1rem 0 0.5rem; }
@@ -22,18 +22,18 @@
 	width: 72px;
 	height: 72px;
 	border-radius: 50%;
-	background: #5ac4f6;
+	background: #4e5e8b;
 	color: #fff;
 	font-size: 2.2rem;
 	font-weight: 700;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .next-steps {
 	padding: 3rem 1rem;
 	text-align: center;
 
-	h2 { margin-bottom: 2rem; color: #0042a9; }
+	h2 { margin-bottom: 2rem; }
 }
 
 .steps-grid {
@@ -46,12 +46,12 @@
 .step-card {
 	padding: 1.5rem 1rem;
 	border-radius: 10px;
-	border: 1px solid #e2e8f0;
-	background: #f8faff;
+	border: 1px solid #e0e0e0;
+	background: #f8f9fc;
 
 	.step-icon { font-size: 2rem; display: block; margin-bottom: 0.75rem; }
-	h3 { margin: 0 0 0.5rem; color: #0042a9; font-size: 1rem; }
-	p  { margin: 0; color: #555; font-size: 0.9rem; line-height: 1.5; }
+	h3 { margin: 0 0 0.5rem; color: #4e5e8b; font-size: 1rem; }
+	p  { margin: 0; color: #666; font-size: 0.9rem; line-height: 1.5; }
 }
 
 .cta-block {
@@ -60,18 +60,3 @@
 	justify-content: center;
 	flex-wrap: wrap;
 }
-
-.btn {
-	display: inline-block;
-	padding: 0.75rem 1.5rem;
-	border-radius: 6px;
-	font-weight: 600;
-	text-decoration: none;
-	transition: opacity 0.2s;
-
-	&:hover { opacity: 0.85; }
-}
-
-.btn-lg { padding: 0.9rem 2rem; font-size: 1rem; }
-.btn-primary { background: #0042a9; color: #fff; border: none; }
-.btn-outline  { background: transparent; border: 2px solid #0042a9; color: #0042a9; }

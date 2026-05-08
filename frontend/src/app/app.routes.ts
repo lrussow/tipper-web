@@ -8,5 +8,6 @@ export const routes: Routes = [
 	{ path: 'download', loadComponent: async () => (await import('./pages/download/download')).Download },
 	{ path: 'account', loadComponent: async () => (await import('./pages/account/account')).Account },
 	{ path: 'confirm', loadComponent: async () => (await import('./pages/confirm/confirm')).Confirm },
+	{ path: 'auth', loadComponent: async () => (await import('./pages/auth/auth')).Auth },
 	{ path: '**', redirectTo: '' },
 ];

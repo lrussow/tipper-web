@@ -30,18 +30,8 @@ export class Auth implements OnInit {
   }
 
   private redirectToApp(hash: string) {
-    const deepLink = `thetipper://auth${hash}`;
-
-    // hide UI to avoid flicker
-    document.body.style.display = 'none';
-
-    // Try to open app
-    window.location.href = deepLink;
-
-    // Fallback — show page if app didn't open
-    setTimeout(() => {
-      document.body.style.display = '';
-    }, 1200);
+    this.vm.showOpenAppButton = true;
+    this.vm.deepLink = `thetipper://auth${hash}`;
   }
 
   private handleAuth() {
@@ -57,5 +47,10 @@ export class Auth implements OnInit {
     if (this.isMobile()) {
       this.redirectToApp(hash);
     }
+  }
+
+  openApp() 
+  {  
+    window.location.href = this.vm.deepLink;
   }
 }

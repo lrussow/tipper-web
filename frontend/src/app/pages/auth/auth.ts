@@ -30,7 +30,7 @@ export class Auth implements OnInit {
   }
 
   private redirectToApp(hash: string) {
-    const deepLink = `tipper://auth${hash}`;
+    const deepLink = `thetipper://auth${hash}`;
 
     // hide UI to avoid flicker
     document.body.style.display = 'none';

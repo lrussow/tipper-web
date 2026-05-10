@@ -54,9 +54,6 @@
           <button id="account-signin-btn" mat-raised-button color="primary" [disabled]="vm.authLoading" (click)="vm.signInWithPassword()">
             @if (vm.authLoading) { <mat-spinner diameter="20"></mat-spinner> } @else { Sign In }
           </button>
-          <button id="account-forgot-link" class="link-btn" (click)="vm.signInMode = 'forgot'">
-            Forgot password?
-          </button>
         </div>
       }
 

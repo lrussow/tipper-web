@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { Navbar } from './shared/navbar/navbar';
 import { AuthService } from './services/auth.service';
 import { LoggingService } from './services/logging.service';
@@ -7,16 +7,41 @@ import { LoggingService } from './services/logging.service';
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [RouterOutlet, Navbar],
+	imports: [RouterOutlet, RouterLink, Navbar],
 	template: `
 		<app-navbar></app-navbar>
 		<main>
 			<router-outlet></router-outlet>
 		</main>
+		<footer class="site-footer">
+			<span>&copy; {{ year }} The Tipper™. All rights reserved.</span>
+			<a id="footer-privacy-policy" routerLink="/privacy-policy">Privacy Policy</a>
+		</footer>
 	`,
+	styles: [`
+		.site-footer {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 1.5rem;
+			padding: 1.25rem 2rem;
+			background: #1a1a2e;
+			color: rgba(255,255,255,0.55);
+			font-size: 0.85rem;
+		}
+		.site-footer a {
+			color: rgba(255,255,255,0.75);
+			text-decoration: none;
+			&:hover { text-decoration: underline; }
+		}
+		@media (max-width: 640px) {
+			.site-footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+		}
+	`],
 })
 export class App implements OnInit {
 	title = 'The Tipper';
+	readonly year = new Date().getFullYear();
 
 	constructor(
 		private readonly auth: AuthService,

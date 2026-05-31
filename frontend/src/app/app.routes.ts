@@ -8,5 +8,6 @@ export const routes: Routes = [
 	{ path: 'login', loadComponent: async () => (await import('./pages/login/login')).Login },
 	{ path: 'account', loadComponent: async () => (await import('./pages/account/account')).Account },
 	{ path: 'privacy-policy', loadComponent: async () => (await import('./pages/privacy-policy/privacy-policy')).PrivacyPolicy },
+	{ path: 'download', loadComponent: async () => (await import('./pages/download/download')).Download },
 	{ path: '**', redirectTo: '' },
 ];

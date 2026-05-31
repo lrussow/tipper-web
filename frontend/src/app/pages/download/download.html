@@ -1,0 +1,39 @@
+<div class="download-page">
+	<section class="page-header">
+		<h1>Download The Tipper</h1>
+		<p class="header-sub">Get the app on your device and start accepting tips today.</p>
+	</section>
+
+	<div class="download-body container">
+
+		<div class="platform-cards">
+
+			<!-- Android -->
+			<div class="platform-card" id="download-android-card">
+				<div class="platform-icon">🤖</div>
+				<h2>Android</h2>
+				<p>Download the APK directly and install it on your Android device. Make sure to allow installs from unknown sources in your device settings.</p>
+				<a id="download-android-btn"
+				   [href]="vm.apkUrl"
+				   [download]="vm.apkFileName"
+				   class="btn btn-primary btn-lg">
+					⬇ Download APK
+				</a>
+				<p class="install-note">
+					To install: open the downloaded file and tap <strong>Install</strong>.<br>
+					If prompted, enable <em>Install unknown apps</em> for your browser or file manager.
+				</p>
+			</div>
+
+			<!-- iOS -->
+			<div class="platform-card platform-card--coming-soon" id="download-ios-card">
+				<div class="platform-icon">🍎</div>
+				<h2>iOS</h2>
+				<p>The iOS version of The Tipper is coming soon to the App Store.</p>
+				<span class="coming-soon-badge">Coming Soon</span>
+			</div>
+
+		</div>
+
+	</div>
+</div>

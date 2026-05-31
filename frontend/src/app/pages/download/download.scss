@@ -48,9 +48,17 @@
 	align-items: center;
 	gap: 1rem;
 
-	.platform-icon {
-		font-size: 3rem;
-		line-height: 1;
+	.platform-logo {
+		width: 64px;
+		height: 64px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		svg {
+			width: 56px;
+			height: 56px;
+		}
 	}
 
 	h2 {
@@ -75,7 +83,7 @@
 }
 
 .platform-card--coming-soon {
-	opacity: 0.6;
+	opacity: 0.55;
 }
 
 .coming-soon-badge {
@@ -89,31 +97,58 @@
 	letter-spacing: 0.05em;
 }
 
-/* Reuse global .btn styles — defined in styles.scss */
-.btn {
-	display: inline-block;
-	padding: 0.75rem 2rem;
-	border-radius: 6px;
-	font-weight: 600;
-	font-size: 1rem;
-	cursor: pointer;
-	text-decoration: none;
-	transition: background 0.2s, color 0.2s;
-}
-
-.btn-primary {
-	background: #4e5e8b;
+.btn-download {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	background: #3DDC84;
 	color: #fff;
+	padding: 0.9rem 2.5rem;
+	border-radius: 8px;
+	font-weight: 700;
+	font-size: 1.05rem;
+	text-decoration: none;
+	transition: background 0.2s;
 
 	&:hover {
-		background: #3d4c78;
+		background: #2fc270;
 		text-decoration: none;
+	}
+
+	.btn-icon {
+		width: 20px;
+		height: 20px;
+		flex-shrink: 0;
 	}
 }
 
-.btn-lg {
-	padding: 0.9rem 2.5rem;
-	font-size: 1.1rem;
+.trust-strip {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.6rem;
+	margin-top: 2.5rem;
+	padding: 1rem 1.5rem;
+	background: #f0f2f8;
+	border: 1px solid #dde1ee;
+	border-radius: 8px;
+	color: #555;
+	font-size: 0.9rem;
+
+	.lock-icon {
+		width: 18px;
+		height: 18px;
+		color: #4e5e8b;
+		flex-shrink: 0;
+	}
+
+	.stripe-logo {
+		height: 20px;
+		width: auto;
+		flex-shrink: 0;
+		position: relative;
+		top: 1px;
+	}
 }
 
 @media (max-width: 1024px) {
@@ -139,5 +174,10 @@
 
 	.platform-cards {
 		grid-template-columns: 1fr;
+	}
+
+	.trust-strip {
+		flex-wrap: wrap;
+		text-align: center;
 	}
 }
